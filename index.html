@@ -8,38 +8,54 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 
     <style>
         /* Paleta y estilos principales del código original */
         :root {
-            --primary-color: #111827;
-            --secondary-color: #374151;
-            --bg-light: #f4f5f7;
-            --accent-green: #0A7456;
-            --accent-red: #E34F4F;
-            --highlight-yellow: #fff2b0;
+            --primary-color: #2c3e50;
+            --secondary-color: #7f8c8d;
+            --accent-color: #3498db;
+            --bg-light: #f4f7f9;
+            --bg-card: #ffffff;
+            --border-color: #e0e6ea;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c4c;
+            --font-main: 'Poppins', sans-serif;
             --highlight-green: #d4edda;
             --highlight-red: #f8d7da;
-            --border-color: #e5e7eb;
+            --highlight-yellow: #fff3cd; /* Agregada para consistencia */
         }
 
         /* Estilos generales y resets */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-main);
             background: var(--bg-light);
             color: var(--primary-color);
             padding-bottom: 80px;
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-smoothing: grayscale;
         }
         .main-content {
             padding: 20px;
             max-width: 960px;
-            margin: 0 auto;
+            margin: 40px auto;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin: 20px auto;
+                padding: 15px;
+            }
         }
 
         /* Splash Screen */
@@ -48,16 +64,19 @@
             background: var(--primary-color); color: #fff;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease-out;
+            transition: opacity 0.7s ease-out;
+            text-align: center;
         }
         #splash img { width: 120px; margin-bottom: 20px; }
-        #splash h2 { font-weight: bold; font-size: 24px; margin-bottom: 10px; }
+        #splash h2 { font-weight: 700; font-size: 32px; margin-bottom: 10px; }
         #splash p { margin-top: 5px; font-size: 14px; opacity: 0.9; }
 
         /* Header & Titles */
         header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             position: relative;
@@ -78,10 +97,12 @@
             text-transform: uppercase;
         }
         @media (max-width: 600px) {
+            header { padding-left: 40px; }
             .title-group h1 { font-size: 18px; }
+            .hamburger-btn { left: 10px; }
         }
         .hamburger-btn {
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: var(--primary-color);
             padding: 10px;
@@ -89,6 +110,7 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
+            z-index: 5;
         }
 
         /* Side Menu */
@@ -109,98 +131,252 @@
             gap: 10px;
         }
         .side-menu.open { left: 0; }
-        .side-menu .action-btn { width: 100%; justify-content: flex-start; margin: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
+        .side-menu .action-btn { 
+            width: 100%; 
+            justify-content: flex-start; 
+            margin: 0; 
+            background: var(--accent-color);
+        }
+        .side-menu .action-btn:hover {
+            background: #258cdb;
+        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; }
         .overlay.active { display: block; }
 
         /* Chips & Actions */
         .controls-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 20px; }
+        .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 30px; }
         .action-btn {
-            background: var(--primary-color);
+            background: var(--accent-color);
             color: white;
             border: 0;
-            padding: 12px 24px;
-            border-radius: 999px;
+            padding: 14px 28px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .action-btn:hover { background: var(--secondary-color); transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .action-btn.danger { background: var(--accent-red); }
-        .action-btn.danger:hover { background: #dc2626; }
-        .action-btn.green { background: var(--accent-green); }
-        .action-btn.green:hover { background: #08664b; }
-        .action-btn.blue { background: #3b82f6; }
-        .action-btn.blue:hover { background: #2563eb; }
-        .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .chip {
-            padding: 8px 16px;
-            border-radius: 999px;
-            cursor: pointer;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: all 0.2s ease-in-out;
-            font-size: 14px;
-        }
-        .chip.active { background: var(--primary-color); color: white; }
-        
-        /* Nuevo estilo para el recuadro de fecha */
-        .date-container {
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); }
+        .action-btn.danger { background: var(--danger-color); }
+        .action-btn.danger:hover { background: #c0392b; }
+        .action-btn.green { background: var(--success-color); }
+        .action-btn.green:hover { background: #27ae60; }
+        .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .chip {
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            background: var(--bg-light);
+            color: var(--secondary-color);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .chip.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .chip:hover { transform: translateY(-1px); }
+
+        /* --- INICIO: ESTILOS MODIFICADOS PARA FECHA Y BÚSQUEDA --- */
+        /* Estilo para el recuadro de fecha y contenedor de búsqueda */
+        .date-container {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Más espacio entre elementos */
+            margin-bottom: 20px;
+            justify-content: flex-start; /* Alineación a la izquierda por defecto */
+            flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea en móviles */
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color); /* Separador visual */
+        }
+        /* Centrar en pantallas grandes */
+        @media (min-width: 600px) {
+            .date-container {
+                justify-content: center;
+            }
+        }
+
         .date-container label {
             font-weight: 600;
             font-size: 14px;
+            color: var(--primary-color);
+            white-space: nowrap; /* Evita que el texto de la etiqueta se rompa */
         }
         .date-container input[type="date"] {
-            padding: 8px;
+            padding: 8px 10px; /* Tamaño ligeramente reducido */
             border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: 'Poppins', sans-serif;
+            border-radius: 8px;
+            font-family: var(--font-main);
             font-size: 14px;
+            background: var(--bg-light);
+            transition: all 0.3s ease;
+            max-width: 150px;
         }
+
+        /* --- ESTILO DE BÚSQUEDA MINIMIZADA/EXPANDIBLE (RENOVADO) --- */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Alineación a la derecha en el contenedor flex */
+            flex-grow: 1; /* Permite que el contenedor de búsqueda ocupe el espacio restante */
+            min-width: 40px;
+            order: 10; /* Empujar al final de la línea en pantallas pequeñas si hay wrap */
+        }
+        @media (min-width: 600px) {
+            .search-container {
+                flex-grow: 0; /* No crece tanto en pantallas grandes */
+                order: initial;
+            }
+        }
+
+        #searchWrapper {
+            display: flex;
+            align-items: center;
+            background: var(--bg-light);
+            border-radius: 50px;
+            overflow: hidden;
+            width: 40px; /* Tamaño inicial de la lupa */
+            transition: width 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        #searchWrapper.expanded {
+            width: 250px; /* Ancho de la barra expandida en pantallas normales */
+            max-width: 90vw;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-color); /* Borde acentuado al expandir */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        #searchButton {
+            background: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            transition: color 0.3s;
+            flex-shrink: 0;
+        }
+        #searchWrapper.expanded #searchButton {
+            color: var(--accent-color); /* Color de la lupa al expandir */
+        }
+
+        #searchInput {
+            flex-grow: 1;
+            padding: 10px 0;
+            border: none;
+            font-size: 16px;
+            font-family: var(--font-main);
+            outline: none;
+            width: 0; /* Oculto inicialmente */
+            opacity: 0;
+            transition: width 0.3s ease, opacity 0.3s ease;
+            background: transparent;
+        }
+
+        #searchWrapper.expanded #searchInput {
+            width: 100%; /* Visible al expandirse */
+            padding: 10px 15px 10px 5px; 
+            opacity: 1;
+        }
+
+        /* Oculta los chips de sección cuando la barra de búsqueda está activa (es decir, en búsqueda global) */
+        .chips.hidden {
+            display: none;
+        }
+        /* --- FIN: ESTILOS MODIFICADOS PARA FECHA Y BÚSQUEDA --- */
+
 
         /* Tables */
         .table-container {
             overflow-x: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-radius: 12px;
         }
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
             font-size: 14px;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
+            background: var(--bg-card);
         }
-        th, td { border: 1px solid var(--border-color); padding: 12px; text-align: center; }
-        th { background: #f3f4f6; font-weight: 600; white-space: nowrap; }
+        th, td { border: 1px solid var(--border-color); padding: 15px; text-align: center; }
+        th { background: var(--primary-color); color: white; font-weight: 600; white-space: nowrap; }
         td.left { text-align: left; }
         th.product-sensitive { white-space: normal; line-height: 1.2; }
-        input[type="number"] { width: 100%; border: 0; text-align: center; background: transparent; font-size: 14px; padding: 2px; outline: none; transition: background-color 0.3s; }
-        td[contenteditable="true"] { background: #fefce8; }
+
+        /* Estilo de input dentro de celda */
+        td input[type="number"] { 
+            width: 100%; 
+            border: 0; 
+            text-align: center; 
+            background: transparent; 
+            font-size: 14px; 
+            padding: 2px; 
+            outline: none; 
+            transition: background-color 0.3s;
+            color: var(--primary-color);
+        }
+        td input[type="number"]:focus {
+            background-color: var(--bg-light);
+            box-shadow: inset 0 0 0 2px var(--accent-color);
+        }
+        td[contenteditable="true"] { 
+            background: var(--bg-light);
+            padding: 15px;
+            outline: none;
+            transition: box-shadow 0.3s;
+        }
+        td[contenteditable="true"]:focus {
+            box-shadow: inset 0 0 0 2px var(--accent-color);
+        }
         .selected-row { background-color: #e0f7fa !important; }
         .initial-highlight { background-color: var(--highlight-yellow) !important; }
         .increased { background-color: var(--highlight-green) !important; }
         .decreased { background-color: var(--highlight-red) !important; }
 
         /* Toast notifications */
-        .toast-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column-reverse; gap: 10px; z-index: 1000; }
-        .toast { padding: 12px 20px; border-radius: 8px; color: white; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transform: translateY(20px); animation: slideIn 0.5s forwards; }
-        .toast.success { background-color: var(--accent-green); }
-        .toast.warning { background-color: #ff9800; }
-        .toast.error { background-color: var(--accent-red); }
-        @keyframes slideIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
-        
+        #toast-container {
+            position: fixed;
+            top: 30px; 
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+        }
+        .toast {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px; 
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(-20px); 
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            min-width: 250px; 
+            justify-content: center;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success { background-color: var(--success-color); }
+        .toast.warning { background-color: var(--warning-color); }
+        .toast.error { background-color: var(--danger-color); }
+
         /* Modals */
         .modal {
             display: none;
@@ -236,10 +412,7 @@
         }
         .modal-content h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 10px; }
         .modal-content p, .modal-content li { color: var(--secondary-color); font-size: 14px; line-height: 1.6; }
-        .modal-content p { margin-bottom: 20px; }
-        .modal-content ul { padding-left: 20px; margin-bottom: 20px; }
-        .modal-content li { margin-bottom: 10px; }
-        .modal-icon { font-size: 48px; color: var(--accent-red); margin-bottom: 20px; }
+        .modal-icon { font-size: 48px; color: var(--danger-color); margin-bottom: 20px; }
         .modal-actions { display: flex; justify-content: space-around; gap: 15px; }
         .modal-actions button { flex: 1; }
         .close-btn { color: var(--secondary-color); position: absolute; top: 15px; right: 25px; font-size: 28px; cursor: pointer; transition: color 0.2s; }
@@ -249,23 +422,14 @@
 
         /* Footer */
         .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            padding: 15px;
             text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
             font-size: 12px;
             color: var(--secondary-color);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: center;
         }
         .footer a {
-            color: #3b82f6;
+            color: var(--accent-color);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
@@ -273,85 +437,54 @@
         .footer a:hover {
             color: var(--primary-color);
         }
-        .footer .links a, .footer .social-links a {
-            padding: 0 5px;
-        }
         .footer .divider {
             color: var(--secondary-color);
             margin: 0 5px;
         }
-        .footer .social-links {
-            display: flex;
-            gap: 15px;
-        }
-        .footer .social-links a i {
-            font-size: 18px;
-            color: var(--primary-color);
-        }
-        .footer .social-links a:hover i {
-            color: #3b82f6;
-        }
-        .footer .version-info {
-            font-size: 11px;
-            color: #9ca3af;
-        }
-
-        /* Contenedor temporal para generar el PDF (debe estar fuera de la vista) */
-        #pdf-content-container {
-            position: absolute;
-            top: -9999px; /* Oculto fuera de la pantalla */
-            left: 0;
-            width: 900px; /* Ancho fijo para una mejor renderización de html2canvas */
-            background: white;
-            padding: 20px;
-        }
-
-        /* Estilos de tabla dentro del PDF */
-        #pdf-content-container .pdf-header { text-align: center; margin-bottom: 20px; }
-        #pdf-content-container .pdf-header h1 { font-size: 24px; margin: 2px 0; font-weight: 700; text-transform: uppercase; color: #111827; }
-        #pdf-content-container .pdf-header p { font-size: 18px; font-weight: bold; margin-top: 5px; text-align: center; color: #374151;}
-        #pdf-content-container .pdf-section-title { text-align: center; font-size: 20px; font-weight: 700; margin-top: 30px; margin-bottom: 10px; text-transform: uppercase;}
-        #pdf-content-container table { border-collapse: collapse; width: 100%; font-size: 14px; margin-bottom: 30px; }
-        #pdf-content-container th, #pdf-content-container td { border: 1px solid #333; padding: 8px; text-align: center; }
-        #pdf-content-container th { background: #f0f0f0; font-weight: bold; }
-        #pdf-content-container td.product-sensitive-header { text-align: left !important; }
-        #pdf-content-container .increased { background-color: #d4edda !important; }
-        #pdf-content-container .decreased { background-color: #f8d7da !important; }
-        #pdf-content-container .pdf-footer { text-align: center; font-size: 14px; font-weight: bold; color: #666; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div id="splash">
         <img src="icon-192.png" alt="Logo">
-        <h2>PRODUCTOS SENSITIVOS</h2>
+        <h2>PRODUCTOS</h2>
+        <h2>SENSITIVOS</h2>
         <p>Powered by Rafael Ramos.</p>
-        <p>Versión 2.0</p>
+        <p>Versión 2.5.5</p>
     </div>
 
     <div id="sideMenu" class="side-menu">
-        <button id="btnExportJson_menu" class="action-btn blue"><i class="fas fa-file-export"></i> Exportar Datos</button>
+        <button id="btnExportJson_menu" class="action-btn"><i class="fas fa-file-export"></i> Exportar Datos</button>
         <input type="file" id="fileInput" style="display: none;" accept=".json">
-        <button id="btnImportJson_menu" class="action-btn blue"><i class="fas fa-file-import"></i> Importar Datos</button>
+        <button id="btnImportJson_menu" class="action-btn"><i class="fas fa-file-import"></i> Importar Datos</button>
     </div>
     <div id="overlay" class="overlay"></div>
 
     <div class="container main-content">
         <header>
-            <div id="hamburgerBtn" class="hamburger-btn">☰</div>
+            <div id="hamburgerBtn" class="hamburger-btn"><i class="fas fa-bars"></i></div>
             <div class="title-group">
-                <h1>GRUPO RIBA SMITH</h1>
+
                 <h1>R/S CHITRÉ SELECTO</h1>
                 <h1>LISTADO DE PRODUCTOS SENSITIVOS</h1>
             </div>
         </header>
-
+        
         <div class="date-container">
-            <label for="review-date">Fecha de Revisión:</label>
+            <label for="review-date"><i class="fas fa-calendar-alt"></i> Fecha:</label>
             <input type="date" id="review-date">
+            
+            <div class="search-container">
+                <div id="searchWrapper">
+                    <button id="searchButton" title="Buscar Producto Globalmente">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Buscar Producto...">
+                </div>
+            </div>
         </div>
-
         <div class="controls-container">
-            <div class="chips" id="chips"></div>
+            <div class="chips" id="chips">
+                </div>
         </div>
 
         <div class="actions">
@@ -364,24 +497,23 @@
         <div class="table-container">
             <table id="tabla">
                 <thead>
-                    <tr>
-                        <th>PRECIO</th>
-                        <th class="left product-sensitive">PRODUCTO<br>SENSITIVO</th>
-                        <th>07:00</th>
-                        <th>12:00</th>
-                        <th>15:00</th>
-                        <th>22:00</th>
+                    <tr id="tableHeader">
+                        <th style="width: 10%;">PRECIO</th>
+                        <th class="left product-sensitive" style="width: 40%;">PRODUCTO<br>SENSITIVO</th>
+                        <th id="headerSection" style="width: 15%; display: none;">SECCIÓN</th> 
+                        <th style="width: 12.5%;">07:00</th>
+                        <th style="width: 12.5%;">12:00</th>
+                        <th style="width: 12.5%;">15:00</th>
+                        <th style="width: 12.5%;">22:00</th>
                     </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
             </table>
         </div>
 
-        <div id="toast" class="toast-container"></div>
+        <div id="toast-container"></div>
     </div>
 
-    <div id="pdf-content-container"></div>
-    
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -390,11 +522,11 @@
             <p>Esta acción no se puede deshacer.</p>
             <div class="modal-actions">
                 <button id="modalConfirmBtn" class="action-btn danger">Confirmar</button>
-                <button id="modalCancelBtn" class="action-btn blue">Cancelar</button>
+                <button id="modalCancelBtn" class="action-btn">Cancelar</button>
             </div>
         </div>
     </div>
-    
+
     <div id="clearModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -403,7 +535,7 @@
             <p>Esta acción eliminará todos los horarios de la sección activa.</p>
             <div class="modal-actions">
                 <button id="clearModalConfirmBtn" class="action-btn danger">Confirmar</button>
-                <button id="clearModalCancelBtn" class="action-btn blue">Cancelar</button>
+                <button id="clearModalCancelBtn" class="action-btn">Cancelar</button>
             </div>
         </div>
     </div>
@@ -422,6 +554,8 @@
                 <li><strong>Uso del Sistema:</strong> La aplicación está destinada únicamente para la gestión de productos sensitivos y el control de los mismos, como parte de las funciones laborales asignadas. Cualquier otro uso está estrictamente prohibido.</li>
                 <li><strong>Confidencialidad y Propiedad de Datos:</strong> Los datos registrados, incluyendo precios, nombres de productos y cualquier otra información ingresada, son propiedad exclusiva de R/S Chitré Selecto. Esta información es confidencial y no debe ser divulgada a terceros.</li>
                 <li><strong>Precisión de la Información:</strong> Usted es responsable de garantizar que la información que ingresa sea veraz, precisa y completa. Cualquier registro falso, inexacto o incompleto es de su única responsabilidad y podría ser sujeto a medidas disciplinarias.</li>
+                <li><strong>Propiedad Intelectual:</strong> La aplicación, incluyendo su código fuente, diseño, interfaz y contenido, es propiedad intelectual de Rafael Ramos y se prohíbe su copia, distribución o modificación sin autorización expresa.</li>
+                <li><strong>Limitación de Responsabilidad:</strong> Rafael Ramos no se hace responsable por daños directos o indirectos, pérdidas o inconvenientes que surjan del uso o la imposibilidad de usar esta aplicación, incluyendo fallas técnicas o errores humanos.</li>
                 <li><strong>Propiedad Intelectual:</strong> La aplicación, incluyendo su código fuente, diseño, interfaz y contenido, es propiedad intelectual de Rafael Ramos y se prohíbe su copia, distribución o modificación sin autorización expresa.</li>
                 <li><strong>Limitación de Responsabilidad:</strong> Rafael Ramos no se hace responsable por daños directos o indirectos, pérdidas o inconvenientes que surjan del uso o la imposibilidad de usar esta aplicación, incluyendo fallas técnicas o errores humanos.</li>
                 <li><strong>Modificaciones a los Términos:</strong> Nos reservamos el derecho de actualizar, modificar o reemplazar estos términos y condiciones en cualquier momento. El uso continuado de la aplicación después de cualquier modificación constituye su aceptación de los nuevos términos.</li>
@@ -452,12 +586,12 @@
     </div>
 
     <footer class="footer">
-        <div class="links">
+        <p>
+            © 2025 Rafael Ramos. Todos los derechos reservados.
             <a href="#" id="openTermsModal">Términos y Condiciones</a>
             <span class="divider">|</span>
             <a href="#" id="openPrivacyModal">Política de Privacidad</a>
-        </div>
-        <p>© 2025 Rafael Ramos. Todos los derechos reservados.</p>
+        </p>
     </footer>
 
     <script>
@@ -475,7 +609,7 @@
                     });
             });
         }
-        
+
         (function () {
             const DEFAULT_SECCIONES = ['FORMULAS','MEDICAMENTOS','CAVA','PASTILLAS CANINAS','LICORES'];
             const STORAGE_KEY = 'productos_sensitivos_por_seccion';
@@ -488,8 +622,7 @@
                 console.warn('localStorage JSON corrupto, reiniciando datos:', e);
                 productos = [];
             }
-            let seccionActiva = DEFAULT_SECCIONES[0];
-            let insertIndex = null;
+            let seccionActiva = productos.length > 0 ? productos[0].seccion : DEFAULT_SECCIONES[0];
             let selectedRow = null;
             const tbody = document.getElementById('tbody');
             const chipsEl = document.getElementById('chips');
@@ -497,7 +630,7 @@
             const btnClear = document.getElementById('btnClear');
             const btnAdd = document.getElementById('btnAdd');
             const btnDeleteRow = document.getElementById('btnDeleteRow');
-            const toastContainer = document.getElementById('toast');
+            const toastContainer = document.getElementById('toast-container'); 
             const fileInput = document.getElementById('fileInput');
             const btnExportJson_menu = document.getElementById('btnExportJson_menu');
             const btnImportJson_menu = document.getElementById('btnImportJson_menu');
@@ -513,48 +646,88 @@
             const termsModal = document.getElementById('termsModal');
             const openTermsModalBtn = document.getElementById('openTermsModal');
             const privacyModal = document.getElementById('privacyModal');
-            const openPrivacyModalBtn = document = document.getElementById('openPrivacyModal');
+            const openPrivacyModalBtn = document.getElementById('openPrivacyModal');
             const allCloseBtns = document.querySelectorAll('.close-btn');
             const reviewDateInput = document.getElementById('review-date');
-            const pdfContainer = document.getElementById('pdf-content-container');
+            
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const searchWrapper = document.getElementById('searchWrapper');
+            const headerSection = document.getElementById('headerSection');
             
             let saveTimer = null;
+
             function save() {
                 clearTimeout(saveTimer);
                 saveTimer = setTimeout(() => {
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(productos));
                 }, 300);
             }
-            function showToast(msg, type = 'success') {
-                const t = document.createElement('div');
-                t.className = `toast ${type}`;
-                t.textContent = msg;
-                toastContainer.appendChild(t);
+            
+            // =========================================================================
+            // LÓGICA DE TOASTS
+            // =========================================================================
+            function showToast(message, type = 'success', duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `<i class="${getIcon(type)}"></i> ${message}`;
+
+                toastContainer.prepend(toast); 
+
+                setTimeout(() => { toast.classList.add('show'); }, 10); 
+
                 setTimeout(() => {
-                    t.style.opacity = '0';
-                    t.style.transform = 'translateY(20px)';
-                    setTimeout(() => t.remove(), 500);
-                }, 2000);
+                    toast.classList.remove('show');
+                    setTimeout(() => { toast.remove(); }, 300); 
+                }, duration);
             }
 
-            // Función para verificar diferencias en una sección (sólo muestra advertencia)
+            function getIcon(type) {
+                switch(type) {
+                    case 'success': return 'fas fa-check-circle';
+                    case 'warning': return 'fas fa-exclamation-triangle';
+                    case 'error': return 'fas fa-times-circle';
+                    default: return 'fas fa-info-circle';
+                }
+            }
+            function showLoadingToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast loading-toast';
+                toast.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${message}`;
+
+                toastContainer.prepend(toast);
+                setTimeout(() => { toast.classList.add('show'); }, 10); 
+                return toast;
+            }
+            function hideToast(toastElement) {
+                if (toastElement) {
+                    toastElement.classList.remove('show');
+                    setTimeout(() => { toastElement.remove(); }, 300);
+                }
+            }
+            // =========================================================================
+            // FIN LÓGICA DE TOASTS
+            // =========================================================================
+
+            // --- FUNCIÓN MODIFICADA PARA NO INCLUIR EL NOMBRE DEL PRODUCTO ---
             function checkDifferencesInActiveSection() {
                 const list = productos.filter(p => p.seccion === seccionActiva);
                 const timeFields = ['t0700', 't1200', 't1500', 't2200'];
-                
+
                 for (const p of list) {
                     for (let i = 1; i < timeFields.length; i++) {
                         const currentVal = parseFloat(p[timeFields[i]]);
                         const prevVal = parseFloat(p[timeFields[i - 1]]);
-                        
+
                         if (!isNaN(currentVal) && !isNaN(prevVal) && currentVal < prevVal) {
-                            showToast('¡Advertencia! Diferencia detectada.', 'warning');
+                            showToast(`¡Advertencia! Diferencia detectada.`, 'warning');
                             return; 
                         }
                     }
                 }
             }
-            
+            // --- FIN DE FUNCIÓN MODIFICADA ---
+
             function renderChips() {
                 chipsEl.innerHTML = '';
                 DEFAULT_SECCIONES.forEach(s => {
@@ -562,9 +735,11 @@
                     b.className = 'chip' + (s === seccionActiva ? ' active' : '');
                     b.textContent = s;
                     b.onclick = () => {
-                        const previousSection = seccionActiva;
-                        if (s !== previousSection) {
+                        if (s !== seccionActiva) {
                             seccionActiva = s;
+                            searchInput.value = ''; // Limpiar la búsqueda al cambiar de sección
+                            searchWrapper.classList.remove('expanded'); // Contraer la barra
+                            chipsEl.classList.remove('hidden'); // Mostrar chips
                             render();
                             checkDifferencesInActiveSection();
                         }
@@ -572,36 +747,58 @@
                     chipsEl.appendChild(b);
                 });
             }
+
             const applyColorAndAlertLogic = (targetInput, suppressToast = true) => {
                 const currentRowInputs = Array.from(targetInput.closest('tr').querySelectorAll('input[type="number"]'));
                 const currentIndex = currentRowInputs.indexOf(targetInput);
                 const currentValue = parseFloat(targetInput.value);
                 const prevInput = currentRowInputs[currentIndex - 1];
                 const prevValue = prevInput ? parseFloat(prevInput.value) : NaN;
+
+                // Limpiar todas las clases de coloración
                 targetInput.classList.remove('initial-highlight', 'increased', 'decreased');
-                if (currentIndex > 0 && !isNaN(currentValue) && !isNaN(prevValue)) {
+
+                if (currentIndex === 0) return; 
+
+                if (!isNaN(currentValue) && !isNaN(prevValue)) {
                     if (currentValue < prevValue) {
                         targetInput.classList.add('decreased');
-                        if (!suppressToast) showToast('¡Advertencia! Diferencia detectada.', 'warning');
+                        if (!suppressToast) showToast('¡Advertencia! Diferencia detectada.', 'warning', 2000);
                     } else if (currentValue > prevValue) {
                         targetInput.classList.add('increased');
                     }
                 }
             };
 
-            function createRowElement(p) {
+            function createRowElement(p, indexInList, isGlobalSearch) {
                 const tr = document.createElement('tr');
+                tr.dataset.index = indexInList;
+                tr.dataset.seccion = p.seccion;
+
+                // Columna PRECIO
                 const tdPrecio = document.createElement('td');
                 tdPrecio.contentEditable = "true";
                 tdPrecio.dataset.field = "precio";
                 tdPrecio.textContent = p.precio || '';
                 tr.appendChild(tdPrecio);
+                
+                // Columna PRODUCTO SENSITIVO
                 const tdNombre = document.createElement('td');
                 tdNombre.className = 'left';
                 tdNombre.contentEditable = "true";
                 tdNombre.dataset.field = "nombre";
                 tdNombre.textContent = p.nombre || '';
                 tr.appendChild(tdNombre);
+
+                // Columna SECCIÓN (solo visible en búsqueda global)
+                if (isGlobalSearch) {
+                    const tdSeccion = document.createElement('td');
+                    tdSeccion.textContent = p.seccion || 'N/A';
+                    tdSeccion.style.display = 'table-cell'; // Mostrar la celda
+                    tr.appendChild(tdSeccion);
+                }
+
+                // Columnas de Horario
                 ['t0700','t1200','t1500','t2200'].forEach(field => {
                     const td = document.createElement('td');
                     const inp = document.createElement('input');
@@ -613,47 +810,74 @@
                 });
                 return tr;
             }
+
             function render() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const isGlobalSearchActive = searchWrapper.classList.contains('expanded') && searchTerm;
+                
+                // Control de visibilidad de chips y encabezado
+                chipsEl.classList.toggle('hidden', isGlobalSearchActive);
+                headerSection.style.display = isGlobalSearchActive ? 'table-cell' : 'none';
+
+                let list;
+                if (isGlobalSearchActive) {
+                    // BÚSQUEDA GLOBAL: busca en todos los productos
+                    list = productos.filter(p => 
+                        (p.precio && String(p.precio).toLowerCase().includes(searchTerm)) ||
+                        (p.nombre && p.nombre.toLowerCase().includes(searchTerm)) ||
+                        (p.seccion && p.seccion.toLowerCase().includes(searchTerm))
+                    );
+                } else {
+                    // MODO NORMAL: solo muestra la sección activa
+                    list = productos.filter(p => p.seccion === seccionActiva);
+                }
+                
                 renderChips();
                 tbody.innerHTML = '';
                 selectedRow = null;
-                insertIndex = null;
-                const list = productos.filter(p => p.seccion === seccionActiva);
+
                 if (!list.length) {
                     const tr = document.createElement('tr');
                     const td = document.createElement('td');
-                    td.colSpan = 6;
-                    td.style.color = '#666';
+                    // AJUSTE: colspan es 7 si la columna de sección está visible (búsqueda global), 6 si no.
+                    td.colSpan = isGlobalSearchActive ? 7 : 6; 
+                    td.style.color = 'var(--secondary-color)';
                     td.style.textAlign = 'center';
                     td.style.padding = '20px';
-                    td.textContent = 'Sin productos en esta sección.';
+                    td.textContent = isGlobalSearchActive ? 'No se encontraron resultados en ninguna sección.' : 'Sin productos en esta sección.';
                     tr.appendChild(td);
                     tbody.appendChild(tr);
                     return;
                 }
+
                 list.forEach(p => {
-                    const tr = createRowElement(p);
+                    const originalIndex = productos.indexOf(p);
+                    const tr = createRowElement(p, originalIndex, isGlobalSearchActive);
+
                     tr.querySelectorAll('[contenteditable="true"]').forEach(td => {
                         td.addEventListener('blur', () => {
                             const field = td.dataset.field;
-                            const index = productos.indexOf(p);
+                            const index = parseInt(tr.dataset.index);
                             if (index > -1) {
                                 productos[index][field] = td.innerText.trim();
                                 save();
                             }
                         });
                     });
+
                     const inputs = Array.from(tr.querySelectorAll('input[type="number"]'));
                     inputs.forEach((inp, idx) => {
                         applyColorAndAlertLogic(inp, true);
                         inp.addEventListener('input', () => {
-                            const index = productos.indexOf(p);
+                            const index = parseInt(tr.dataset.index);
                             const field = inp.dataset.field;
                             const newValue = inp.value.trim();
+
                             if (index > -1) {
                                 productos[index][field] = newValue;
                                 save();
                                 applyColorAndAlertLogic(inp, false);
+                                
                                 const currentRowInputs = Array.from(inp.closest('tr').querySelectorAll('input[type="number"]'));
                                 const currentIndex = currentRowInputs.indexOf(inp);
                                 for (let j = currentIndex + 1; j < currentRowInputs.length; j++) {
@@ -662,44 +886,91 @@
                             }
                         });
                     });
+
                     tr.addEventListener('click', () => {
                         if (selectedRow) selectedRow.classList.remove('selected-row');
                         selectedRow = tr;
                         selectedRow.classList.add('selected-row');
-                        insertIndex = productos.indexOf(p);
                     });
                     tbody.appendChild(tr);
                 });
             }
+
+            // =========================================================================
+            // LÓGICA DE BÚSQUEDA MINIMIZADA/GLOBAL
+            // =========================================================================
+            searchButton.addEventListener('click', () => {
+                // Al hacer clic en el botón, expandimos la barra
+                searchWrapper.classList.add('expanded');
+                setTimeout(() => {
+                    searchInput.focus();
+                    searchInput.value = ''; 
+                    render();
+                }, 300);
+            });
+
+            // Si el usuario borra el contenido y pierde el foco, volvemos al modo normal
+            searchInput.addEventListener('blur', () => {
+                if (searchInput.value.trim() === '') {
+                    searchWrapper.classList.remove('expanded');
+                    chipsEl.classList.remove('hidden'); // Asegurarse de que los chips se muestren
+                    // Volver al renderizado de la sección activa
+                    render();
+                }
+            });
+
+            searchInput.addEventListener('input', render);
+            // =========================================================================
+            // FIN LÓGICA DE BÚSQUEDA MINIMIZADA/GLOBAL
+            // =========================================================================
+
             btnAdd.onclick = () => {
                 const f = { seccion: seccionActiva, precio: '', nombre: '', t0700: '', t1200: '', t1500: '', t2200: '' };
-                if (insertIndex !== null) {
-                    productos.splice(insertIndex + 1, 0, f);
+                const list = productos.filter(p => p.seccion === seccionActiva);
+
+                if (list.length === 0) {
+                     productos.push(f);
+                     showToast('Fila agregada.', 'success');
+                } else if (selectedRow && selectedRow.dataset.seccion === seccionActiva) {
+                    const selectedIndex = parseInt(selectedRow.dataset.index);
+                    productos.splice(selectedIndex + 1, 0, f);
                     showToast('Fila agregada.', 'success');
                 } else {
-                    productos.push(f);
-                    showToast('Fila agregada al final.', 'success');
+                    const lastIndexInSection = productos.map(p => p.seccion).lastIndexOf(seccionActiva);
+                    if (lastIndexInSection > -1) {
+                        productos.splice(lastIndexInSection + 1, 0, f);
+                        showToast('Fila agregada.', 'success');
+                    } else {
+                        productos.push(f);
+                        showToast('Fila agregada al final.', 'success');
+                    }
                 }
+
                 save();
                 render();
             };
+
             btnDeleteRow.onclick = () => {
-                if (insertIndex !== null) {
+                if (selectedRow) {
                     deleteModal.style.display = 'flex';
                 } else {
-                    showToast('Selecciona una fila.', 'error');
+                    showToast('Selecciona una fila para eliminar.', 'error');
                 }
             };
             btnClear.onclick = () => {
                 clearModal.style.display = 'flex';
             };
             modalConfirmBtn.onclick = () => {
-                if (insertIndex !== null) {
-                    productos.splice(insertIndex, 1);
-                    save();
-                    render();
-                    showToast('Fila eliminada.', 'success');
+                if (selectedRow) {
+                    const indexToDelete = parseInt(selectedRow.dataset.index);
+                    if (indexToDelete > -1) {
+                        productos.splice(indexToDelete, 1);
+                        save();
+                        render();
+                        showToast('Fila eliminada.', 'success');
+                    }
                     deleteModal.style.display = 'none';
+                    selectedRow = null;
                 }
             };
             modalCancelBtn.onclick = () => {
@@ -715,7 +986,7 @@
             clearModalCancelBtn.onclick = () => {
                 clearModal.style.display = 'none';
             };
-            
+
             allCloseBtns.forEach(btn => {
                 btn.onclick = () => { btn.closest('.modal').style.display = 'none'; };
             });
@@ -737,115 +1008,182 @@
                 if (event.target === privacyModal) privacyModal.style.display = 'none';
             };
 
-            function getPdfCellClass(currentValue, prevValue) {
+            function getPdfCellColor(currentValue, prevValue) {
                 const numCurrent = parseFloat(currentValue);
                 const numPrev = parseFloat(prevValue);
-                if (!isNaN(numCurrent) && !isNaN(numPrev)) {
-                    if (numCurrent < numPrev) return 'decreased';
-                    if (numCurrent > numPrev) return 'increased';
-                }
-                return '';
+
+                if (isNaN(numCurrent) || isNaN(numPrev)) return null;
+
+                const increasedColor = [212, 237, 218];
+                const decreasedColor = [248, 215, 218];
+
+                if (numCurrent < numPrev) return decreasedColor;
+                if (numCurrent > numPrev) return increasedColor;
+                return null;
             }
 
-            // FUNCIÓN MODIFICADA PARA GENERAR Y GUARDAR PDF AUTOMÁTICAMENTE (usando jsPDF/html2canvas)
-            btnExport.onclick = async () => {
-                if (!productos.length) {
-                    showToast('No hay productos para exportar.', 'warning');
+            // ******************************************************************
+            // ************ FUNCIÓN DE EXPORTACIÓN CON jsPDF.autoTable() *********
+            // ******************************************************************
+            btnExport.onclick = () => {
+                const dataAvailable = productos.filter(p => DEFAULT_SECCIONES.includes(p.seccion)).length > 0;
+
+                if (!dataAvailable) {
+                    showToast('No hay datos para exportar.', 'warning');
                     return;
                 }
-                showToast('Generando PDF... por favor espere.', 'warning');
-                
-                const secciones = DEFAULT_SECCIONES;
-                let contentHtml = '';
-                const reviewDateValue = reviewDateInput.value;
-                let formattedReviewDate;
-                if (reviewDateValue) {
-                    const [y, m, d] = reviewDateValue.split('-');
-                    formattedReviewDate = `${d}/${m}/${y}`;
-                } else {
-                    formattedReviewDate = 'N/A';
+
+                if (typeof window.jspdf === 'undefined' || typeof window.jspdf.AcroForm === 'undefined') {
+                    showToast('Error: Librería de jsPDF o AutoTable no cargada.', 'error');
+                    return;
                 }
 
-                secciones.forEach((sec) => {
-                    const rows = productos.filter(p => p.seccion === sec);
-                    if (rows.length) {
-                        contentHtml += `<div class="pdf-section-container">`;
-                        contentHtml += `<div class="pdf-section-title">${sec}</div>`;
-                        contentHtml += `<table><thead><tr><th>PRECIO</th><th class="product-sensitive-header">PRODUCTO<br>SENSITIVO</th><th>07:00</th><th>12:00</th><th>15:00</th><th>22:00</th></tr></thead><tbody>`;
-                        rows.forEach(r => {
-                            let t0700_val = r.t0700 || '';
-                            let t1200_val = r.t1200 || '';
-                            let t1500_val = r.t1500 || '';
-                            let t2200_val = r.t2200 || '';
-                            
-                            let class1200 = getPdfCellClass(t1200_val, t0700_val);
-                            let class1500 = getPdfCellClass(t1500_val, t1200_val);
-                            let class2200 = getPdfCellClass(t2200_val, t1500_val);
-                            contentHtml += `<tr>
-                                <td>${r.precio || ''}</td>
-                                <td class="product-sensitive-header">${r.nombre || ''}</td>
-                                <td>${t0700_val}</td>
-                                <td class="${class1200}">${t1200_val}</td>
-                                <td class="${class1500}">${t1500_val}</td>
-                                <td class="${class2200}">${t2200_val}</td>
-                            </tr>`;
+                const loadingToast = showLoadingToast('Generando PDF... por favor espere.');
+
+                setTimeout(() => { 
+                    try {
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF('p', 'mm', 'a4'); 
+                        const marginX = 15;
+                        const pageHeight = doc.internal.pageSize.height;
+                        let isFirstPage = true;
+
+                        const reviewDateValue = reviewDateInput.value;
+                        let formattedReviewDate = 'N/A';
+                        if (reviewDateValue) {
+                            const [y, m, d] = reviewDateValue.split('-');
+                            formattedReviewDate = `${d}/${m}/${y}`;
+                        } else {
+                            const today = new Date();
+                            formattedReviewDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+                        }
+
+                        const PDF_MAIN_TITLE = "LISTADO DE PRODUCTOS SENSITIVOS";
+
+                        const addHeaderAndFooter = (doc, title) => { 
+                            let yPos = 15;
+
+                            doc.setFontSize(16).setFont('helvetica', 'bold');
+                            doc.text("GRUPO RIBA SMITH", doc.internal.pageSize.width / 2, yPos, { align: 'center' });
+                            yPos += 6;
+                            doc.setFontSize(12).setFont('helvetica', 'normal');
+                            doc.text("R/S CHITRÉ SELECTO", doc.internal.pageSize.width / 2, yPos, { align: 'center' });
+                            yPos += 5;
+
+                            doc.setFontSize(14).setFont('helvetica', 'bold');
+                            const mainTitleLines = doc.splitTextToSize(PDF_MAIN_TITLE, doc.internal.pageSize.width - marginX * 2);
+                            doc.text(mainTitleLines, doc.internal.pageSize.width / 2, yPos, { align: 'center' });
+                            yPos += (mainTitleLines.length * 5) + 3;
+
+                            doc.setFontSize(12).setFont('helvetica', 'bold');
+                            const sectionTitleLines = doc.splitTextToSize(`SECCIÓN: ${title}`, doc.internal.pageSize.width - marginX * 2);
+                            doc.text(sectionTitleLines, doc.internal.pageSize.width / 2, yPos, { align: 'center' });
+                            yPos += (sectionTitleLines.length * 5) + 3;
+
+                            doc.setFontSize(10).setFont('helvetica', 'normal'); 
+                            doc.text(`Fecha de Revisión: ${formattedReviewDate}`, marginX, yPos);
+
+                            yPos += 8;
+
+                            doc.setFontSize(8).setFont('helvetica', 'normal');
+                            doc.text(`Página ${doc.internal.getNumberOfPages()}`, doc.internal.pageSize.width - marginX, 10, { align: 'right' }); 
+
+                            const footerText = 'Powered by Rafael Ramos';
+                            doc.text(footerText, doc.internal.pageSize.width / 2, pageHeight - 5, { align: 'center' });
+
+                            return yPos;
+                        };
+
+                        const headers = [
+                            { header: 'PRECIO', dataKey: 'precio' },
+                            { header: 'PRODUCTO SENSITIVO', dataKey: 'nombre' },
+                            { header: '07:00', dataKey: 't0700' },
+                            { header: '12:00', dataKey: 't1200' },
+                            { header: '15:00', dataKey: 't1500' },
+                            { header: '22:00', dataKey: 't2200' },
+                        ];
+
+                        DEFAULT_SECCIONES.forEach(seccion => {
+                            const sectionData = productos.filter(p => p.seccion === seccion);
+
+                            if (sectionData.length > 0) {
+                                if (!isFirstPage) {
+                                    doc.addPage();
+                                }
+                                isFirstPage = false;
+
+                                let currentY = addHeaderAndFooter(doc, seccion);
+
+                                const body = sectionData.map(d => [
+                                    d.precio || '', d.nombre || '', d.t0700 || '', d.t1200 || '', d.t1500 || '', d.t2200 || ''
+                                ]);
+
+                                doc.autoTable({
+                                    startY: currentY,
+                                    head: [headers.map(h => h.header)],
+                                    body: body,
+                                    theme: 'grid',
+                                    styles: { fontSize: 8, cellPadding: 2, halign: 'center', minCellHeight: 8 },
+                                    headStyles: { fillColor: [44, 62, 80], textColor: [255, 255, 255], fontStyle: 'bold' },
+                                    columnStyles: {
+                                        0: { cellWidth: 15 }, // Precio
+                                        1: { cellWidth: 75, halign: 'left' }, // Producto
+                                        2: { cellWidth: 20 }, // 07:00
+                                        3: { cellWidth: 20 }, // 12:00
+                                        4: { cellWidth: 20 }, // 15:00
+                                        5: { cellWidth: 20 }, // 22:00
+                                    },
+                                    tableWidth: 'wrap', 
+                                    margin: { left: marginX, right: marginX, top: 15, bottom: 15 }, 
+
+                                    // HOOK para colorear las celdas
+                                    didParseCell: (data) => {
+                                        const rowData = sectionData[data.row.index];
+                                        const colIndex = data.column.index;
+                                        let fillColor = null;
+
+                                        if (colIndex === 3) { // 12:00 (compara con 07:00)
+                                            fillColor = getPdfCellColor(rowData.t1200, rowData.t0700);
+                                        } else if (colIndex === 4) { // 15:00 (compara con 12:00)
+                                            fillColor = getPdfCellColor(rowData.t1500, rowData.t1200);
+                                        } else if (colIndex === 5) { // 22:00 (compara con 15:00)
+                                            fillColor = getPdfCellColor(rowData.t2200, rowData.t1500);
+                                        }
+
+                                        if (fillColor) {
+                                            data.cell.styles.fillColor = fillColor;
+                                        }
+                                    },
+
+                                    didDrawPage: (data) => {
+                                        doc.setFontSize(8).setFont('helvetica', 'normal');
+                                        const footerText = 'Powered by Rafael Ramos';
+                                        doc.text(footerText, doc.internal.pageSize.width / 2, pageHeight - 5, { align: 'center' });
+
+                                        if (data.pageNumber > 1) { 
+                                            doc.text(`Página ${doc.internal.getNumberOfPages()}`, doc.internal.pageSize.width - marginX, 10, { align: 'right' }); 
+                                            data.cursor.y = 15;
+                                        }
+                                    }
+                                });
+                            }
                         });
-                        contentHtml += `</tbody></table>`;
-                        contentHtml += `</div>`;
+
+
+                        doc.save(`Productos_Sensitivos_${formattedReviewDate.replace(/\//g, '-')}.pdf`);
+
+                        hideToast(loadingToast);
+                        showToast('¡PDF guardado con éxito!', 'success', 4000);
+                    } catch (e) {
+                        console.error("Error al generar el PDF:", e);
+                        hideToast(loadingToast);
+                        showToast('Error al generar el PDF. Revise la consola.', 'error', 5000);
                     }
-                });
-                
-                const today = new Date();
-                const day = String(today.getDate()).padStart(2, '0');
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const year = today.getFullYear();
-                const formattedDate = `${day}-${month}-${year}`;
-
-                // Insertar el contenido en el contenedor oculto
-                pdfContainer.innerHTML = `
-                    <div class="pdf-header">
-                        <h1>GRUPO RIBA SMITH</h1>
-                        <h1>R/S CHITRÉ SELECTO</h1>
-                        <h1>LISTADO DE PRODUCTOS SENSITIVOS</h1>
-                        <p>Fecha de Revisión: ${formattedReviewDate}</p>
-                    </div>
-                    ${contentHtml}
-                    <div class="pdf-footer">Powered by Rafael Ramos</div>
-                `;
-
-                // Configuración y generación del PDF
-                try {
-                    const canvas = await html2canvas(pdfContainer, { scale: 2 });
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' vertical, 'mm' unidades, 'a4' tamaño
-                    const imgWidth = 210; // A4 width in mm
-                    const pageHeight = 295; // A4 height in mm
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 0;
-
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-
-                    // Manejo de múltiples páginas
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                    }
-
-                    pdf.save(`Productos_Sensitivos_${formattedDate}.pdf`);
-                    showToast('¡PDF guardado con éxito!', 'success');
-                } catch (error) {
-                    console.error("Error al generar el PDF:", error);
-                    showToast('Error al generar el PDF. Revisa la consola.', 'error');
-                } finally {
-                    pdfContainer.innerHTML = ''; // Limpiar el contenido
-                }
+                }, 100);
             };
-            // FIN DE LA FUNCIÓN MODIFICADA
-
+            // ******************************************************************
+            // ************ FIN DE FUNCIÓN CON jsPDF.autoTable() ****************
+            // ******************************************************************
 
             const handleExportJson = () => {
                 if (!productos.length) {
@@ -912,16 +1250,17 @@
             }
 
             window.addEventListener("load", () => {
+                // Esconde la pantalla de inicio
                 setTimeout(() => { document.getElementById("splash").style.opacity = "0"; }, 1500);
                 setTimeout(() => { document.getElementById("splash").style.display = "none"; }, 2000);
+
                 if (!reviewDateInput.value) {
                     reviewDateInput.value = getTodayDateFormattedForInput();
                 }
                 render();
-                // Llamar a la función de verificación al cargar por primera vez
                 checkDifferencesInActiveSection();
             });
         })();
     </script>
 </body>
-</html>
+    </html>

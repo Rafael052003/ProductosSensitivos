@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -29,7 +30,7 @@
             --font-main: 'Poppins', sans-serif;
             --highlight-green: #d4edda;
             --highlight-red: #f8d7da;
-            --highlight-yellow: #fff3cd; /* Agregada para consistencia */
+            --highlight-yellow: #fff3cd; 
         }
 
         /* Estilos generales y resets */
@@ -74,7 +75,7 @@
         /* Header & Titles */
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
@@ -136,6 +137,8 @@
             justify-content: flex-start; 
             margin: 0; 
             background: var(--accent-color);
+            padding: 10px 20px;
+            font-size: 13px;
         }
         .side-menu .action-btn:hover {
             background: #258cdb;
@@ -144,36 +147,46 @@
         .overlay.active { display: block; }
 
         /* Chips & Actions */
-        .controls-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 30px; }
+        .controls-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        
         .action-btn {
             background: var(--accent-color);
             color: white;
             border: 0;
-            padding: 14px 28px;
+            padding: 10px 20px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px; 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 13px;
         }
         .action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); }
         .action-btn.danger { background: var(--danger-color); }
         .action-btn.danger:hover { background: #c0392b; }
         .action-btn.green { background: var(--success-color); }
         .action-btn.green:hover { background: #27ae60; }
-        .chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        
+        .chips { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+            justify-content: center; 
+            margin-bottom: 15px; 
+        }
         .chip {
-            padding: 10px 20px;
+            padding: 8px 16px; 
             border-radius: 50px;
             cursor: pointer;
             background: var(--bg-light);
             color: var(--secondary-color);
             font-weight: 500;
             transition: all 0.2s ease;
+            font-size: 13px; 
         }
         .chip.active {
             background: var(--primary-color);
@@ -182,19 +195,21 @@
         }
         .chip:hover { transform: translateY(-1px); }
 
-        /* --- INICIO: ESTILOS MODIFICADOS PARA FECHA Y BÚSQUEDA --- */
-        /* Estilo para el recuadro de fecha y contenedor de búsqueda */
+        /* --- ESTILOS COMPACTOS DE FECHA Y BÚSQUEDA --- */
+        
         .date-container {
             display: flex;
             align-items: center;
-            gap: 15px; /* Más espacio entre elementos */
-            margin-bottom: 20px;
-            justify-content: flex-start; /* Alineación a la izquierda por defecto */
-            flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea en móviles */
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color); /* Separador visual */
+            gap: 10px; 
+            margin-bottom: 15px; 
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            padding: 5px 0 10px 0; 
+            border-bottom: 1px solid var(--border-color); 
+            border-top: 1px solid var(--border-color); 
+            margin-top: 15px; 
         }
-        /* Centrar en pantallas grandes */
+        
         @media (min-width: 600px) {
             .date-container {
                 justify-content: center;
@@ -205,10 +220,11 @@
             font-weight: 600;
             font-size: 14px;
             color: var(--primary-color);
-            white-space: nowrap; /* Evita que el texto de la etiqueta se rompa */
+            white-space: nowrap;
         }
+        
         .date-container input[type="date"] {
-            padding: 8px 10px; /* Tamaño ligeramente reducido */
+            padding: 8px 10px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-family: var(--font-main);
@@ -216,20 +232,20 @@
             background: var(--bg-light);
             transition: all 0.3s ease;
             max-width: 150px;
+            text-align: center;
         }
 
-        /* --- ESTILO DE BÚSQUEDA MINIMIZADA/EXPANDIBLE (RENOVADO) --- */
         .search-container {
             display: flex;
             align-items: center;
-            justify-content: flex-end; /* Alineación a la derecha en el contenedor flex */
-            flex-grow: 1; /* Permite que el contenedor de búsqueda ocupe el espacio restante */
+            justify-content: flex-end;
+            flex-grow: 1;
             min-width: 40px;
-            order: 10; /* Empujar al final de la línea en pantallas pequeñas si hay wrap */
+            order: 10;
         }
         @media (min-width: 600px) {
             .search-container {
-                flex-grow: 0; /* No crece tanto en pantallas grandes */
+                flex-grow: 0;
                 order: initial;
             }
         }
@@ -240,16 +256,17 @@
             background: var(--bg-light);
             border-radius: 50px;
             overflow: hidden;
-            width: 40px; /* Tamaño inicial de la lupa */
+            width: 40px; 
             transition: width 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            height: 40px; 
         }
 
         #searchWrapper.expanded {
-            width: 250px; /* Ancho de la barra expandida en pantallas normales */
+            width: 250px; 
             max-width: 90vw;
             background: var(--bg-card);
-            border: 1px solid var(--accent-color); /* Borde acentuado al expandir */
+            border: 1px solid var(--accent-color);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
@@ -264,7 +281,7 @@
             flex-shrink: 0;
         }
         #searchWrapper.expanded #searchButton {
-            color: var(--accent-color); /* Color de la lupa al expandir */
+            color: var(--accent-color); 
         }
 
         #searchInput {
@@ -274,23 +291,22 @@
             font-size: 16px;
             font-family: var(--font-main);
             outline: none;
-            width: 0; /* Oculto inicialmente */
+            width: 0; 
             opacity: 0;
             transition: width 0.3s ease, opacity 0.3s ease;
             background: transparent;
         }
 
         #searchWrapper.expanded #searchInput {
-            width: 100%; /* Visible al expandirse */
+            width: 100%; 
             padding: 10px 15px 10px 5px; 
             opacity: 1;
         }
 
-        /* Oculta los chips de sección cuando la barra de búsqueda está activa (es decir, en búsqueda global) */
         .chips.hidden {
             display: none;
         }
-        /* --- FIN: ESTILOS MODIFICADOS PARA FECHA Y BÚSQUEDA --- */
+        /* --- FIN ESTILOS COMPACTOS DE FECHA Y BÚSQUEDA --- */
 
 
         /* Tables */
@@ -441,6 +457,36 @@
             color: var(--secondary-color);
             margin: 0 5px;
         }
+
+        /* --- SCROLL-TO-TOP --- */
+        .scroll-top-btn {
+            display: none; 
+            position: fixed;
+            bottom: 90px; 
+            right: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 24px;
+            line-height: 50px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .scroll-top-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .scroll-top-btn:hover {
+            background-color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -449,7 +495,7 @@
         <h2>PRODUCTOS</h2>
         <h2>SENSITIVOS</h2>
         <p>Powered by Rafael Ramos.</p>
-        <p>Versión 2.5.5</p>
+        <p>Versión 2.5</p>
     </div>
 
     <div id="sideMenu" class="side-menu">
@@ -463,8 +509,6 @@
         <header>
             <div id="hamburgerBtn" class="hamburger-btn"><i class="fas fa-bars"></i></div>
             <div class="title-group">
-
-                <h1>R/S CHITRÉ SELECTO</h1>
                 <h1>LISTADO DE PRODUCTOS SENSITIVOS</h1>
             </div>
         </header>
@@ -482,6 +526,7 @@
                 </div>
             </div>
         </div>
+        
         <div class="controls-container">
             <div class="chips" id="chips">
                 </div>
@@ -585,6 +630,10 @@
         </div>
     </div>
 
+    <button onclick="scrollToTop()" id="scrollTopBtn" class="scroll-top-btn" title="Subir">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
     <footer class="footer">
         <p>
             © 2025 Rafael Ramos. Todos los derechos reservados.
@@ -595,20 +644,7 @@
     </footer>
 
     <script>
-        // Importante: La librería jsPDF está disponible globalmente como window.jspdf.jsPDF después de cargar el script.
         const { jsPDF } = window.jspdf;
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado con éxito:', registration);
-                    })
-                    .catch(error => {
-                        console.log('Fallo en el registro de Service Worker:', error);
-                    });
-            });
-        }
 
         (function () {
             const DEFAULT_SECCIONES = ['FORMULAS','MEDICAMENTOS','CAVA','PASTILLAS CANINAS','LICORES'];
@@ -654,6 +690,8 @@
             const searchButton = document.getElementById('searchButton');
             const searchWrapper = document.getElementById('searchWrapper');
             const headerSection = document.getElementById('headerSection');
+            
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
             
             let saveTimer = null;
 
@@ -709,7 +747,6 @@
             // FIN LÓGICA DE TOASTS
             // =========================================================================
 
-            // --- FUNCIÓN MODIFICADA PARA NO INCLUIR EL NOMBRE DEL PRODUCTO ---
             function checkDifferencesInActiveSection() {
                 const list = productos.filter(p => p.seccion === seccionActiva);
                 const timeFields = ['t0700', 't1200', 't1500', 't2200'];
@@ -726,7 +763,6 @@
                     }
                 }
             }
-            // --- FIN DE FUNCIÓN MODIFICADA ---
 
             function renderChips() {
                 chipsEl.innerHTML = '';
@@ -737,9 +773,9 @@
                     b.onclick = () => {
                         if (s !== seccionActiva) {
                             seccionActiva = s;
-                            searchInput.value = ''; // Limpiar la búsqueda al cambiar de sección
-                            searchWrapper.classList.remove('expanded'); // Contraer la barra
-                            chipsEl.classList.remove('hidden'); // Mostrar chips
+                            searchInput.value = ''; 
+                            searchWrapper.classList.remove('expanded'); 
+                            chipsEl.classList.remove('hidden'); 
                             render();
                             checkDifferencesInActiveSection();
                         }
@@ -755,7 +791,6 @@
                 const prevInput = currentRowInputs[currentIndex - 1];
                 const prevValue = prevInput ? parseFloat(prevInput.value) : NaN;
 
-                // Limpiar todas las clases de coloración
                 targetInput.classList.remove('initial-highlight', 'increased', 'decreased');
 
                 if (currentIndex === 0) return; 
@@ -794,7 +829,7 @@
                 if (isGlobalSearch) {
                     const tdSeccion = document.createElement('td');
                     tdSeccion.textContent = p.seccion || 'N/A';
-                    tdSeccion.style.display = 'table-cell'; // Mostrar la celda
+                    tdSeccion.style.display = 'table-cell'; 
                     tr.appendChild(tdSeccion);
                 }
 
@@ -815,20 +850,17 @@
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 const isGlobalSearchActive = searchWrapper.classList.contains('expanded') && searchTerm;
                 
-                // Control de visibilidad de chips y encabezado
                 chipsEl.classList.toggle('hidden', isGlobalSearchActive);
                 headerSection.style.display = isGlobalSearchActive ? 'table-cell' : 'none';
 
                 let list;
                 if (isGlobalSearchActive) {
-                    // BÚSQUEDA GLOBAL: busca en todos los productos
                     list = productos.filter(p => 
                         (p.precio && String(p.precio).toLowerCase().includes(searchTerm)) ||
                         (p.nombre && p.nombre.toLowerCase().includes(searchTerm)) ||
                         (p.seccion && p.seccion.toLowerCase().includes(searchTerm))
                     );
                 } else {
-                    // MODO NORMAL: solo muestra la sección activa
                     list = productos.filter(p => p.seccion === seccionActiva);
                 }
                 
@@ -839,7 +871,6 @@
                 if (!list.length) {
                     const tr = document.createElement('tr');
                     const td = document.createElement('td');
-                    // AJUSTE: colspan es 7 si la columna de sección está visible (búsqueda global), 6 si no.
                     td.colSpan = isGlobalSearchActive ? 7 : 6; 
                     td.style.color = 'var(--secondary-color)';
                     td.style.textAlign = 'center';
@@ -896,11 +927,7 @@
                 });
             }
 
-            // =========================================================================
-            // LÓGICA DE BÚSQUEDA MINIMIZADA/GLOBAL
-            // =========================================================================
             searchButton.addEventListener('click', () => {
-                // Al hacer clic en el botón, expandimos la barra
                 searchWrapper.classList.add('expanded');
                 setTimeout(() => {
                     searchInput.focus();
@@ -909,20 +936,15 @@
                 }, 300);
             });
 
-            // Si el usuario borra el contenido y pierde el foco, volvemos al modo normal
             searchInput.addEventListener('blur', () => {
                 if (searchInput.value.trim() === '') {
                     searchWrapper.classList.remove('expanded');
-                    chipsEl.classList.remove('hidden'); // Asegurarse de que los chips se muestren
-                    // Volver al renderizado de la sección activa
+                    chipsEl.classList.remove('hidden'); 
                     render();
                 }
             });
 
             searchInput.addEventListener('input', render);
-            // =========================================================================
-            // FIN LÓGICA DE BÚSQUEDA MINIMIZADA/GLOBAL
-            // =========================================================================
 
             btnAdd.onclick = () => {
                 const f = { seccion: seccionActiva, precio: '', nombre: '', t0700: '', t1200: '', t1500: '', t2200: '' };
@@ -1021,6 +1043,30 @@
                 if (numCurrent > numPrev) return increasedColor;
                 return null;
             }
+            
+            function getValidFormattedDate(dateString) {
+                const dateRegex = /^(\d{4})-(\d{2})-(\d{2})$/; // YYYY-MM-DD
+                const match = dateString.match(dateRegex);
+
+                if (match) {
+                    const [full, year, month, day] = match;
+                    return { formatted: `${day}/${month}/${year}`, forFileName: `${day}-${month}-${year}` }; 
+                } else {
+                    const today = new Date();
+                    const d = String(today.getDate()).padStart(2, '0');
+                    const m = String(today.getMonth() + 1).padStart(2, '0');
+                    const y = today.getFullYear();
+                    return { formatted: `${d}/${m}/${y}`, forFileName: `${d}-${m}-${y}` };
+                }
+            }
+            
+            function getTodayDateFormattedForInput() {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
 
             // ******************************************************************
             // ************ FUNCIÓN DE EXPORTACIÓN CON jsPDF.autoTable() *********
@@ -1048,15 +1094,10 @@
                         const pageHeight = doc.internal.pageSize.height;
                         let isFirstPage = true;
 
-                        const reviewDateValue = reviewDateInput.value;
-                        let formattedReviewDate = 'N/A';
-                        if (reviewDateValue) {
-                            const [y, m, d] = reviewDateValue.split('-');
-                            formattedReviewDate = `${d}/${m}/${y}`;
-                        } else {
-                            const today = new Date();
-                            formattedReviewDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
-                        }
+                        const dateData = getValidFormattedDate(reviewDateInput.value);
+                        const formattedReviewDate = dateData.formatted;
+                        const fileNameDate = dateData.forFileName;
+
 
                         const PDF_MAIN_TITLE = "LISTADO DE PRODUCTOS SENSITIVOS";
 
@@ -1136,17 +1177,16 @@
                                     tableWidth: 'wrap', 
                                     margin: { left: marginX, right: marginX, top: 15, bottom: 15 }, 
 
-                                    // HOOK para colorear las celdas
                                     didParseCell: (data) => {
                                         const rowData = sectionData[data.row.index];
                                         const colIndex = data.column.index;
                                         let fillColor = null;
 
-                                        if (colIndex === 3) { // 12:00 (compara con 07:00)
+                                        if (colIndex === 3) { 
                                             fillColor = getPdfCellColor(rowData.t1200, rowData.t0700);
-                                        } else if (colIndex === 4) { // 15:00 (compara con 12:00)
+                                        } else if (colIndex === 4) { 
                                             fillColor = getPdfCellColor(rowData.t1500, rowData.t1200);
-                                        } else if (colIndex === 5) { // 22:00 (compara con 15:00)
+                                        } else if (colIndex === 5) { 
                                             fillColor = getPdfCellColor(rowData.t2200, rowData.t1500);
                                         }
 
@@ -1170,7 +1210,7 @@
                         });
 
 
-                        doc.save(`Productos_Sensitivos_${formattedReviewDate.replace(/\//g, '-')}.pdf`);
+                        doc.save(`Productos_Sensitivos_${fileNameDate}.pdf`);
 
                         hideToast(loadingToast);
                         showToast('¡PDF guardado con éxito!', 'success', 4000);
@@ -1195,7 +1235,11 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `backup_productos_sensitivos_${new Date().toISOString().slice(0,10)}.json`;
+                const today = new Date();
+                const d = String(today.getDate()).padStart(2, '0');
+                const m = String(today.getMonth() + 1).padStart(2, '0');
+                const y = today.getFullYear();
+                a.download = `backup_productos_sensitivos_${y}-${m}-${d}.json`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -1241,16 +1285,83 @@
                 overlay.classList.remove('active');
             });
 
-            function getTodayDateFormattedForInput() {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
+            window.scrollToTop = function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            };
+
+            // ******************************************************************
+            // ************ LÓGICA DE OCULTAR BOTÓN CON TECLADO ACTIVO **********
+            // ******************************************************************
+
+            // Usaremos visualViewport para detectar cambios de teclado.
+            // Establecemos la altura inicial al cargar.
+            let initialViewportHeight = window.innerHeight;
+            if ('visualViewport' in window) {
+                initialViewportHeight = window.visualViewport.height;
+            }
+            
+            // Umbral de cambio de altura (en píxeles) para considerar que el teclado está visible
+            const KEYBOARD_THRESHOLD = 150; 
+
+            // Función para determinar si el botón de scroll debe mostrarse (se ha scrolleado)
+            function shouldShowScrollButton() {
+                // Muestra el botón si el usuario ha scrolleado más de 300px
+                return (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300);
+            }
+            
+            // Función para determinar si el teclado virtual está activo
+            function isKeyboardCurrentlyActive() {
+                const currentHeight = ('visualViewport' in window) ? window.visualViewport.height : window.innerHeight;
+                // Si la altura actual es significativamente menor que la altura inicial, el teclado está activo.
+                return (currentHeight < (initialViewportHeight - KEYBOARD_THRESHOLD));
             }
 
+            // Función que maneja la lógica de visibilidad del botón de scroll
+            function toggleScrollButtonVisibility() {
+                const isKeyboardActive = isKeyboardCurrentlyActive();
+
+                if (isKeyboardActive) {
+                    // 1. Teclado activo: Oculta el botón inmediatamente y detiene la animación.
+                    scrollTopBtn.classList.remove('show');
+                    scrollTopBtn.style.display = "none";
+                } else if (shouldShowScrollButton()) {
+                    // 2. Teclado inactivo y Scrolleado: Muestra el botón con animación.
+                    scrollTopBtn.style.display = "block";
+                    // Pequeño timeout para que la animación CSS 'show' se active correctamente
+                    setTimeout(() => { 
+                        scrollTopBtn.classList.add('show');
+                    }, 50);
+                } else {
+                    // 3. Teclado inactivo y No scrolleado: Oculta el botón con animación.
+                    scrollTopBtn.classList.remove('show');
+                    // Espera a que termine la animación de ocultar (0.3s) antes de aplicar display: none
+                    setTimeout(() => {
+                         if (!shouldShowScrollButton()) {
+                             scrollTopBtn.style.display = "none";
+                         }
+                    }, 300);
+                }
+            }
+            
+            // Evento para detectar si el usuario hace scroll
+            window.onscroll = toggleScrollButtonVisibility;
+
+            // Evento para detectar cambios en el viewport (teclado virtual en móvil)
+            if ('visualViewport' in window) {
+                window.visualViewport.onresize = toggleScrollButtonVisibility;
+            } else {
+                // Fallback para navegadores antiguos
+                window.addEventListener('resize', toggleScrollButtonVisibility);
+            }
+
+            // ******************************************************************
+            // ************ FIN LÓGICA DE OCULTAR BOTÓN CON TECLADO ACTIVO ******
+            // ******************************************************************
+            
             window.addEventListener("load", () => {
-                // Esconde la pantalla de inicio
                 setTimeout(() => { document.getElementById("splash").style.opacity = "0"; }, 1500);
                 setTimeout(() => { document.getElementById("splash").style.display = "none"; }, 2000);
 
@@ -1263,4 +1374,4 @@
         })();
     </script>
 </body>
-    </html>
+</html>

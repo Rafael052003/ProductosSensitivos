@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +12,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
     <style>
         /* Paleta y estilos principales del código original */
@@ -42,7 +41,7 @@
             padding-bottom: 80px;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-smoothing: grayscale;
+            -moz-osx-font-smoothing: grayscale;
         }
         .main-content {
             padding: 20px;
@@ -308,7 +307,6 @@
         }
         /* --- FIN ESTILOS COMPACTOS DE FECHA Y BÚSQUEDA --- */
 
-
         /* Tables */
         .table-container {
             overflow-x: auto;
@@ -343,13 +341,7 @@
             box-shadow: inset 0 0 0 2px var(--accent-color);
         }
         td[contenteditable="true"] { 
-            background: var(--bg-light);
-            padding: 15px;
-            outline: none;
-            transition: box-shadow 0.3s;
-        }
-        td[contenteditable="true"]:focus {
-            box-shadow: inset 0 0 0 2px var(--accent-color);
+            cursor: default;
         }
         .selected-row { background-color: #e0f7fa !important; }
         .initial-highlight { background-color: var(--highlight-yellow) !important; }
@@ -426,6 +418,18 @@
             text-align: left;
             padding: 25px 40px;
         }
+        /* Modal de configuración a pantalla completa */
+        .modal-content.fullscreen {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            padding: 20px !important;
+            border-radius: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
         .modal-content h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 10px; }
         .modal-content p, .modal-content li { color: var(--secondary-color); font-size: 14px; line-height: 1.6; }
         .modal-icon { font-size: 48px; color: var(--danger-color); margin-bottom: 20px; }
@@ -443,6 +447,10 @@
             padding: 20px 0;
             font-size: 12px;
             color: var(--secondary-color);
+        }
+        .footer p { /* Asegura que cada párrafo en el footer esté centrado */
+            margin: 0;
+            line-height: 1.5;
         }
         .footer a {
             color: var(--accent-color);
@@ -487,6 +495,131 @@
         .scroll-top-btn:hover {
             background-color: var(--accent-color);
         }
+
+        /* --- ESTILOS ESPECÍFICOS DE CONFIGURACIÓN --- */
+        .settings-tab-btn {
+            border-radius: 8px !important;
+            padding: 8px 15px !important;
+            font-size: 14px !important;
+            background: var(--secondary-color);
+            transition: background 0.2s;
+        }
+        .settings-tab-btn.active {
+            background: var(--primary-color);
+        }
+        .settings-tab-btn:hover {
+            transform: none;
+        }
+        .product-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px dotted var(--border-color);
+            background-color: var(--bg-card); /* Necesario para drag */
+            cursor: move; /* Indica que se puede mover */
+            transition: background-color 0.2s;
+        }
+        .product-item-row:last-child {
+            border-bottom: none;
+        }
+        /* Estilos de Sortable.js */
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: var(--highlight-yellow);
+        }
+        .sortable-drag {
+            opacity: 1;
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .reorder-handle {
+            cursor: move;
+            color: var(--secondary-color);
+            font-size: 20px;
+            padding: 0 10px 0 0;
+        }
+        .sortable-drag .reorder-handle {
+            color: white;
+        }
+        
+        /* Estilos mejorados para la configuración en pantalla completa */
+        .settings-tab-content {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-right: 5px;
+            flex: 1 1 0;
+        }
+        #settingsTabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #productList, #sectionList {
+            max-height: calc(100% - 60px) !important;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .settings-section {
+            margin-bottom: 20px;
+        }
+        .settings-section h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        .settings-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .settings-input-group input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            flex-grow: 1;
+            font-family: var(--font-main);
+        }
+        /* --- FIN ESTILOS ESPECÍFICOS DE CONFIGURACIÓN --- */
+        
+        /* Responsive para pantallas pequeñas */
+        @media (max-width: 768px) {
+            #settingsTabs {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .settings-tab-btn {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        /* Settings modal header fijo */
+        #settingsModal .modal-content.fullscreen > h2 {
+            flex-shrink: 0;
+        }
+        #settingsModal .modal-content.fullscreen > #settingsTabs {
+            flex-shrink: 0;
+        }
+        /* El tab content ocupa todo el espacio restante */
+        #settingsModal .settings-tab-content {
+            flex: 1 1 0;
+            overflow-y: auto;
+            height: auto !important;
+        }
+        /* Lista de productos y secciones ocupa el espacio disponible */
+        #productList, #sectionList {
+            max-height: none !important;
+            height: auto !important;
+        }
     </style>
 </head>
 <body>
@@ -495,10 +628,11 @@
         <h2>PRODUCTOS</h2>
         <h2>SENSITIVOS</h2>
         <p>Powered by Rafael Ramos.</p>
-        <p>Versión 2.5</p>
+        <p>Versión 2.7</p>
     </div>
 
     <div id="sideMenu" class="side-menu">
+        <button id="btnOpenSettings" class="action-btn" style="background: var(--warning-color);"><i class="fas fa-cog"></i> Configuración APP</button> 
         <button id="btnExportJson_menu" class="action-btn"><i class="fas fa-file-export"></i> Exportar Datos</button>
         <input type="file" id="fileInput" style="display: none;" accept=".json">
         <button id="btnImportJson_menu" class="action-btn"><i class="fas fa-file-import"></i> Importar Datos</button>
@@ -533,10 +667,10 @@
         </div>
 
         <div class="actions">
-            <button id="btnAdd" class="action-btn"><i class="fas fa-plus"></i> Agregar Fila</button>
+            <button id="btnAdd" style="display:none" class="action-btn"><i class="fas fa-plus"></i> Agregar Fila</button>
             <button id="btnExport" class="action-btn green"><i class="fas fa-file-pdf"></i> Generar PDF</button>
             <button id="btnClear" class="action-btn danger"><i class="fas fa-eraser"></i> Borrar Horarios</button>
-            <button id="btnDeleteRow" class="action-btn danger"><i class="fas fa-trash-alt"></i> Eliminar Fila</button>
+            <button id="btnDeleteRow" style="display:none" class="action-btn danger"><i class="fas fa-trash-alt"></i> Eliminar Fila</button>
         </div>
 
         <div class="table-container">
@@ -559,9 +693,10 @@
         <div id="toast-container"></div>
     </div>
 
+    <!-- Modal de Eliminar -->
     <div id="deleteModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" data-modal-target="deleteModal">&times;</span>
             <i class="fas fa-trash-alt modal-icon"></i>
             <h2>¿Eliminar Fila?</h2>
             <p>Esta acción no se puede deshacer.</p>
@@ -572,9 +707,10 @@
         </div>
     </div>
 
+    <!-- Modal de Borrar Horarios -->
     <div id="clearModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" data-modal-target="clearModal">&times;</span>
             <i class="fas fa-eraser modal-icon"></i>
             <h2>¿Borrar Horarios?</h2>
             <p>Esta acción eliminará todos los horarios de la sección activa.</p>
@@ -585,9 +721,10 @@
         </div>
     </div>
 
+    <!-- Modal de Términos -->
     <div id="termsModal" class="modal">
         <div class="modal-content large-text">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" data-modal-target="termsModal">&times;</span>
             <h2>Términos y Condiciones</h2>
             <p>
                 Este sistema de listado y control de producto es una herramienta interna y exclusiva, propiedad de Rafael Ramos, diseñada para el personal de seguridad de la sucursal R/S Chitré Selecto.
@@ -601,16 +738,14 @@
                 <li><strong>Precisión de la Información:</strong> Usted es responsable de garantizar que la información que ingresa sea veraz, precisa y completa. Cualquier registro falso, inexacto o incompleto es de su única responsabilidad y podría ser sujeto a medidas disciplinarias.</li>
                 <li><strong>Propiedad Intelectual:</strong> La aplicación, incluyendo su código fuente, diseño, interfaz y contenido, es propiedad intelectual de Rafael Ramos y se prohíbe su copia, distribución o modificación sin autorización expresa.</li>
                 <li><strong>Limitación de Responsabilidad:</strong> Rafael Ramos no se hace responsable por daños directos o indirectos, pérdidas o inconvenientes que surjan del uso o la imposibilidad de usar esta aplicación, incluyendo fallas técnicas o errores humanos.</li>
-                <li><strong>Propiedad Intelectual:</strong> La aplicación, incluyendo su código fuente, diseño, interfaz y contenido, es propiedad intelectual de Rafael Ramos y se prohíbe su copia, distribución o modificación sin autorización expresa.</li>
-                <li><strong>Limitación de Responsabilidad:</strong> Rafael Ramos no se hace responsable por daños directos o indirectos, pérdidas o inconvenientes que surjan del uso o la imposibilidad de usar esta aplicación, incluyendo fallas técnicas o errores humanos.</li>
-                <li><strong>Modificaciones a los Términos:</strong> Nos reservamos el derecho de actualizar, modificar o reemplazar estos términos y condiciones en cualquier momento. El uso continuado de la aplicación después de cualquier modificación constituye su aceptación de los nuevos términos.</li>
             </ul>
         </div>
     </div>
 
+    <!-- Modal de Privacidad -->
     <div id="privacyModal" class="modal">
         <div class="modal-content large-text">
-            <span class="close-btn">&times;</span>
+            <span class="close-btn" data-modal-target="privacyModal">&times;</a></span>
             <h2>Política de Privacidad</h2>
             <p>
                 Esta Política de Privacidad describe cómo se recopila, utiliza y protege la información en la aplicación "PRODUCTOS SENSITIVOS" para la sucursal R/S Chitré Selecto.
@@ -630,16 +765,162 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONFIGURACIÓN A PANTALLA COMPLETA -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content fullscreen">
+            <span class="close-btn" data-modal-target="settingsModal">&times;</span>
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-cog"></i> Configuración de la Aplicación</h2>
+            
+            <div id="settingsTabs">
+                <button class="action-btn settings-tab-btn active" data-tab="product-crud">Gestión de Productos</button>
+                <button class="action-btn settings-tab-btn" data-tab="section-crud">Gestión de Secciones</button>
+            </div>
+            
+            <!-- Pestaña de Productos -->
+            <div id="product-crud" class="settings-tab-content">
+                <div class="settings-section">
+                    <h3>Gestión de Productos por Sección</h3>
+                    <p style="font-size: 13px; color: var(--secondary-color); margin-bottom: 15px;">
+                        Aquí puedes agregar, editar, eliminar y reordenar productos dentro de cada sección.
+                    </p>
+                    
+                    <div class="settings-input-group">
+                        <select id="settingSectionSelect" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; flex-grow: 1; font-size: 14px;"></select>
+                        <button id="btnAddProduct" class="action-btn green" style="width: auto; padding: 10px 20px; font-size: 14px;"><i class="fas fa-plus"></i> Agregar Producto</button>
+                    </div>
+                    
+                    <p style="font-size: 12px; color: var(--accent-color); margin-bottom: 15px; font-style: italic;">
+                        <i class="fas fa-info-circle"></i> Para reordenar productos, arrastra y suelta los elementos usando el ícono de barras <i class="fas fa-grip-lines"></i>.
+                    </p>
+
+                    <div id="productList" style="height: calc(100% - 120px);">
+                        <p style="text-align: center; color: var(--secondary-color); padding: 40px;">Cargando productos...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestaña de Secciones -->
+            <div id="section-crud" class="settings-tab-content" style="display: none;">
+                <div class="settings-section">
+                    <h3>Gestión de Secciones</h3>
+                    <p style="font-size: 13px; color: var(--secondary-color); margin-bottom: 15px;">
+                        Las secciones corresponden a los "chips" que aparecen en la parte superior de la aplicación.
+                    </p>
+                    
+                    <div class="settings-input-group">
+                        <input type="text" id="newSectionInput" placeholder="Nombre de la nueva sección" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; flex-grow: 1; font-size: 14px;">
+                        <button id="btnAddSection" class="action-btn green" style="width: auto; padding: 10px 20px; font-size: 14px;"><i class="fas fa-folder-plus"></i> Crear Sección</button>
+                    </div>
+                    
+                    <p style="font-size: 12px; color: var(--secondary-color); margin-bottom: 15px;">
+                        <i class="fas fa-exclamation-triangle"></i> Al eliminar una sección, también se eliminarán todos los productos asociados a ella.
+                    </p>
+
+                    <div id="sectionList" style="height: calc(100% - 120px);">
+                        <!-- Las secciones se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Editar Producto -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" data-modal-target="editProductModal">&times;</span>
+            <h2><i class="fas fa-edit"></i> Editar Producto</h2>
+            <div style="text-align: left; margin-top: 15px;">
+                <label for="editNombre" style="display: block; font-weight: 600; margin-bottom: 5px;">Nombre:</label>
+                <input type="text" id="editNombre" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                
+                <label for="editPrecio" style="display: block; font-weight: 600; margin-bottom: 5px;">Precio:</label>
+                <input type="number" id="editPrecio" style="width: 100%; padding: 8px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px;">
+            </div>
+            <div class="modal-actions">
+                <button id="btnSaveProductEdit" class="action-btn green">Guardar Cambios</button>
+                <button id="btnCancelProductEdit" class="action-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Confirmar Eliminar Producto -->
+    <div id="confirmDeleteProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" data-modal-target="confirmDeleteProductModal">&times;</span>
+            <i class="fas fa-times-circle modal-icon"></i>
+            <h2>¿Eliminar Producto?</h2>
+            <p id="confirmDeleteProductMsg">Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button id="confirmDeleteProductBtn" class="action-btn danger">Confirmar</button>
+                <button id="cancelDeleteProductBtn" class="action-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminar Sección -->
+    <div id="confirmDeleteSectionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" data-modal-target="confirmDeleteSectionModal">&times;</span>
+            <i class="fas fa-exclamation-triangle modal-icon" style="color: var(--warning-color);"></i>
+            <h2>¿Eliminar Sección?</h2>
+            <p id="confirmDeleteSectionMsg">Esto también eliminará TODOS los productos asociados a ella.</p>
+            <div class="modal-actions">
+                <button id="confirmDeleteSectionBtn" class="action-btn danger">Confirmar</button>
+                <button id="cancelDeleteSectionBtn" class="action-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Versiones -->
+    <div id="versionModal" class="modal">
+        <div class="modal-content large-text">
+            <span class="close-btn" data-modal-target="versionModal">&times;</span>
+            <h2><i class="fas fa-code-branch"></i> Historial de Versiones</h2>
+            <p style="font-size: 14px; margin-bottom: 15px; color: var(--primary-color);">**Versión Actual: 2.7 (Diciembre 2025)**</p>
+
+            <ul style="list-style-type: none; padding-left: 0;">
+                <li style="margin-bottom: 15px; border-left: 3px solid var(--success-color); padding-left: 10px;">
+                    <strong style="color: var(--success-color);">v2.7 (Drag & Drop)</strong>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: var(--secondary-color);">
+                        <li>**[NUEVO]** Implementación de funcionalidad **Arrastrar y Soltar (Drag & Drop)** para reordenar productos en Configuración.</li>
+                        <li>Eliminación de los botones de flecha (Up/Down) para un flujo de trabajo más rápido.</li>
+                    </ul>
+                </li>
+                <li style="margin-bottom: 15px; border-left: 3px solid var(--warning-color); padding-left: 10px;">
+                    <strong style="color: var(--warning-color);">v2.6 (Reordenamiento CRUD)</strong>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: var(--secondary-color);">
+                        <li>**[NUEVO]** Botones de flecha para mover productos (arriba/abajo) en el Módulo de Configuración.</li>
+                        <li>Mejoras en la manipulación de arrays para mantener el orden de la tabla.</li>
+                    </ul>
+                </li>
+                <li style="margin-bottom: 15px; border-left: 3px solid var(--accent-color); padding-left: 10px;">
+                    <strong style="color: var(--accent-color);">v2.5 (Mejoras de UX y Configuración)</strong>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: var(--secondary-color);">
+                        <li>**[NUEVO]** Módulo de Configuración de Productos y Secciones (CRUD).</li>
+                        <li>**[NUEVO]** Modal de Historial de Versiones (Changelog) en el Footer.</li>
+                        <li>**[CORRECCIÓN CRÍTICA]** Lógica de ocultar/mostrar botón de scroll en teclados virtuales (VisualViewport).</li>
+                        <li>Mejoras en la lógica de búsqueda global.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <button onclick="scrollToTop()" id="scrollTopBtn" class="scroll-top-btn" title="Subir">
         <i class="fas fa-chevron-up"></i>
     </button>
 
     <footer class="footer">
-        <p>
+        <p style="margin-bottom: 5px;">
             © 2025 Rafael Ramos. Todos los derechos reservados.
+        </p>
+        <p>
             <a href="#" id="openTermsModal">Términos y Condiciones</a>
             <span class="divider">|</span>
             <a href="#" id="openPrivacyModal">Política de Privacidad</a>
+        </p>
+        <p style="margin-top: 5px;">
+            <a href="#" id="openVersionModal">Versión 2.7</a>
         </p>
     </footer>
 
@@ -647,7 +928,26 @@
         const { jsPDF } = window.jspdf;
 
         (function () {
-            const DEFAULT_SECCIONES = ['FORMULAS','MEDICAMENTOS','CAVA','PASTILLAS CANINAS','LICORES'];
+            // Se cambia DEFAULT_SECCIONES a una variable persistente en localStorage si es posible
+            const DEFAULT_SECCIONES_KEY = 'default_secciones';
+            let DEFAULT_SECCIONES = localStorage.getItem(DEFAULT_SECCIONES_KEY);
+            if (DEFAULT_SECCIONES) {
+                 // Convertir a array y asegurar que el formato sea correcto
+                try {
+                     DEFAULT_SECCIONES = JSON.parse(DEFAULT_SECCIONES);
+                     if (!Array.isArray(DEFAULT_SECCIONES) || DEFAULT_SECCIONES.length === 0) {
+                         // Fallback si el dato está vacío o corrupto
+                         DEFAULT_SECCIONES = ['FORMULAS','MEDICAMENTOS','CAVA','PASTILLAS CANINAS','LICORES'];
+                     }
+                } catch(e) {
+                     DEFAULT_SECCIONES = ['FORMULAS','MEDICAMENTOS','CAVA','PASTILLAS CANINAS','LICORES'];
+                }
+            } else {
+                DEFAULT_SECCIONES = ['FORMULAS','MEDICAMENTOS','CAVA','PASTILLAS CANINAS','LICORES'];
+                // Guardar la configuración inicial
+                localStorage.setItem(DEFAULT_SECCIONES_KEY, JSON.stringify(DEFAULT_SECCIONES));
+            }
+
             const STORAGE_KEY = 'productos_sensitivos_por_seccion';
             let productos = [];
             try {
@@ -658,7 +958,8 @@
                 console.warn('localStorage JSON corrupto, reiniciando datos:', e);
                 productos = [];
             }
-            let seccionActiva = productos.length > 0 ? productos[0].seccion : DEFAULT_SECCIONES[0];
+            // Asegura que la sección activa sea válida
+            let seccionActiva = (productos.length > 0 && DEFAULT_SECCIONES.includes(productos[0].seccion)) ? productos[0].seccion : DEFAULT_SECCIONES[0];
             let selectedRow = null;
             const tbody = document.getElementById('tbody');
             const chipsEl = document.getElementById('chips');
@@ -693,12 +994,36 @@
             
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             
+            // --- ELEMENTOS DE CONFIGURACIÓN Y VERSIÓN ---
+            const btnOpenSettings = document.getElementById('btnOpenSettings');
+            const settingsModal = document.getElementById('settingsModal');
+            const versionModal = document.getElementById('versionModal');
+            const openVersionModalBtn = document.getElementById('openVersionModal'); 
+            const settingSectionSelect = document.getElementById('settingSectionSelect');
+            const productList = document.getElementById('productList');
+            const btnAddProduct = document.getElementById('btnAddProduct');
+            const sectionList = document.getElementById('sectionList');
+            const newSectionInput = document.getElementById('newSectionInput');
+            const btnAddSection = document.getElementById('btnAddSection');
+            const editProductModal = document.getElementById('editProductModal');
+            const btnSaveProductEdit = document.getElementById('btnSaveProductEdit');
+            const btnCancelProductEdit = document.getElementById('btnCancelProductEdit');
+            const editNombreInput = document.getElementById('editNombre');
+            const editPrecioInput = document.getElementById('editPrecio');
+            // Botones de tabs de configuración
+            const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
+
+            let currentProductIndexToEdit = -1;
+            let sortableInstance = null; // Instancia de Sortable.js
+            // ----------------------------------------------------
+
             let saveTimer = null;
 
             function save() {
                 clearTimeout(saveTimer);
                 saveTimer = setTimeout(() => {
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(productos));
+                    localStorage.setItem(DEFAULT_SECCIONES_KEY, JSON.stringify(DEFAULT_SECCIONES)); // Guardar secciones
                 }, 300);
             }
             
@@ -812,7 +1137,6 @@
 
                 // Columna PRECIO
                 const tdPrecio = document.createElement('td');
-                tdPrecio.contentEditable = "true";
                 tdPrecio.dataset.field = "precio";
                 tdPrecio.textContent = p.precio || '';
                 tr.appendChild(tdPrecio);
@@ -820,7 +1144,6 @@
                 // Columna PRODUCTO SENSITIVO
                 const tdNombre = document.createElement('td');
                 tdNombre.className = 'left';
-                tdNombre.contentEditable = "true";
                 tdNombre.dataset.field = "nombre";
                 tdNombre.textContent = p.nombre || '';
                 tr.appendChild(tdNombre);
@@ -958,10 +1281,11 @@
                     productos.splice(selectedIndex + 1, 0, f);
                     showToast('Fila agregada.', 'success');
                 } else {
+                    // Busca el índice del último producto en la sección activa
                     const lastIndexInSection = productos.map(p => p.seccion).lastIndexOf(seccionActiva);
                     if (lastIndexInSection > -1) {
                         productos.splice(lastIndexInSection + 1, 0, f);
-                        showToast('Fila agregada.', 'success');
+                        showToast('Fila agregada al final de la sección activa.', 'success');
                     } else {
                         productos.push(f);
                         showToast('Fila agregada al final.', 'success');
@@ -1009,10 +1333,6 @@
                 clearModal.style.display = 'none';
             };
 
-            allCloseBtns.forEach(btn => {
-                btn.onclick = () => { btn.closest('.modal').style.display = 'none'; };
-            });
-
             openTermsModalBtn.onclick = (e) => {
                 e.preventDefault();
                 termsModal.style.display = 'flex';
@@ -1022,12 +1342,10 @@
                 e.preventDefault();
                 privacyModal.style.display = 'flex';
             };
-
-            window.onclick = (event) => {
-                if (event.target === deleteModal) deleteModal.style.display = 'none';
-                if (event.target === clearModal) clearModal.style.display = 'none';
-                if (event.target === termsModal) termsModal.style.display = 'none';
-                if (event.target === privacyModal) privacyModal.style.display = 'none';
+            
+            openVersionModalBtn.onclick = (e) => {
+                e.preventDefault();
+                versionModal.style.display = 'flex';
             };
 
             function getPdfCellColor(currentValue, prevValue) {
@@ -1129,7 +1447,7 @@
                             doc.setFontSize(8).setFont('helvetica', 'normal');
                             doc.text(`Página ${doc.internal.getNumberOfPages()}`, doc.internal.pageSize.width - marginX, 10, { align: 'right' }); 
 
-                            const footerText = 'Powered by Rafael Ramos';
+                            const footerText = 'Powered by Rafael Ramos | Versión 2.7';
                             doc.text(footerText, doc.internal.pageSize.width / 2, pageHeight - 5, { align: 'center' });
 
                             return yPos;
@@ -1197,7 +1515,7 @@
 
                                     didDrawPage: (data) => {
                                         doc.setFontSize(8).setFont('helvetica', 'normal');
-                                        const footerText = 'Powered by Rafael Ramos';
+                                        const footerText = 'Powered by Rafael Ramos | Versión 2.7';
                                         doc.text(footerText, doc.internal.pageSize.width / 2, pageHeight - 5, { align: 'center' });
 
                                         if (data.pageNumber > 1) { 
@@ -1293,51 +1611,403 @@
             };
 
             // ******************************************************************
+            // ************ LÓGICA DEL MÓDULO DE CONFIGURACIÓN (CRUD) ***********
+            // ******************************************************************
+            
+            // Función auxiliar para reordenar un array
+            function arrayMove(arr, oldIndex, newIndex) {
+                if (newIndex >= arr.length) {
+                    let k = newIndex - arr.length + 1;
+                    while (k--) {
+                        arr.push(undefined);
+                    }
+                }
+                arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+                return arr;
+            }
+
+            function getProductIndicesBySection(seccion) {
+                return productos
+                    .map((p, index) => ({ p, index }))
+                    .filter(item => item.p.seccion === seccion)
+                    .map(item => item.index);
+            }
+            
+            // Inicializa Sortable.js en la lista de productos
+            function initializeSortable(currentSection) {
+                if (sortableInstance) {
+                    sortableInstance.destroy();
+                }
+
+                sortableInstance = Sortable.create(productList, {
+                    animation: 150,
+                    handle: '.reorder-handle', // Solo se mueve al arrastrar el ícono
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    
+                    onEnd: function (evt) {
+                        const oldIndexLocal = evt.oldIndex;
+                        const newIndexLocal = evt.newIndex;
+                        
+                        if (oldIndexLocal !== newIndexLocal) {
+                            const indicesInSection = getProductIndicesBySection(currentSection);
+                            
+                            const oldGlobalIndex = indicesInSection[oldIndexLocal];
+                            const newGlobalIndex = indicesInSection[newIndexLocal];
+                            
+                            // 1. Mover el elemento dentro del array global 'productos'
+                            arrayMove(productos, oldGlobalIndex, newGlobalIndex);
+                            
+                            // 2. Guardar y actualizar interfaces
+                            save();
+                            renderProductList(); // Re-renderiza la lista de configuración para reasignar data-index
+                            render(); // Re-renderiza la tabla principal
+                            showToast('Producto reordenado.', 'success', 1500);
+                        }
+                    }
+                });
+            }
+
+            function renderSettingsSectionSelect() {
+                settingSectionSelect.innerHTML = '';
+                DEFAULT_SECCIONES.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = s;
+                    settingSectionSelect.appendChild(opt);
+                });
+                // Intenta seleccionar la sección activa de la vista principal
+                settingSectionSelect.value = seccionActiva; 
+                renderProductList(true); // Pasar true para inicializar Sortable
+            }
+
+            function renderProductItem(p, index) {
+                const div = document.createElement('div');
+                div.className = 'product-item-row'; 
+                // Se usa el global index para que Sortable pueda identificar el elemento
+                div.dataset.id = index; 
+
+                div.innerHTML = `
+                    <i class="fas fa-grip-lines reorder-handle"></i>
+                    <div style="flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-left: 10px;">
+                        <strong style="font-size: 14px;">${p.nombre || 'Producto sin nombre'}</strong>
+                        <span style="font-size: 12px; color: var(--secondary-color); margin-left: 10px;">(P: ${p.precio || '0'})</span>
+                    </div>
+                `;
+
+                const actions = document.createElement('div');
+                actions.style.display = 'flex';
+                actions.style.gap = '8px';
+                actions.style.alignItems = 'center';
+
+                
+                const btnEdit = document.createElement('button');
+                btnEdit.innerHTML = '<i class="fas fa-edit"></i>';
+                btnEdit.className = 'action-btn';
+                btnEdit.style.width = '30px';
+                btnEdit.style.height = '30px'; 
+                btnEdit.style.padding = '5px';
+                btnEdit.style.fontSize = '12px';
+                btnEdit.style.background = 'var(--warning-color)';
+                btnEdit.style.borderRadius = '50%';
+                // Usar el índice global para la edición
+                btnEdit.onclick = () => openEditProductModal(index); 
+                actions.appendChild(btnEdit);
+
+                const btnDelete = document.createElement('button');
+                btnDelete.innerHTML = '<i class="fas fa-times"></i>';
+                btnDelete.className = 'action-btn danger';
+                btnDelete.style.width = '30px';
+                btnDelete.style.height = '30px';
+                btnDelete.style.padding = '5px';
+                btnDelete.style.fontSize = '12px';
+                btnDelete.style.borderRadius = '50%';
+                // Usar el índice global para la eliminación
+                btnDelete.onclick = () => deleteProduct(index); 
+                actions.appendChild(btnDelete);
+
+                div.appendChild(actions);
+                return div;
+            }
+
+            function renderProductList(shouldInitializeSortable = false) {
+                const currentSettingSection = settingSectionSelect.value;
+                const filteredList = productos.filter(p => p.seccion === currentSettingSection);
+                
+                productList.innerHTML = '';
+
+                if (filteredList.length === 0) {
+                    productList.innerHTML = '<p style="text-align: center; color: var(--secondary-color); padding: 40px;">No hay productos en esta sección. Añada uno.</p>';
+                    return;
+                }
+
+                filteredList.forEach((p) => {
+                    // Busca el índice en el array global 'productos'
+                    const index = productos.indexOf(p); 
+                    productList.appendChild(renderProductItem(p, index));
+                });
+                
+                if (shouldInitializeSortable) {
+                    initializeSortable(currentSettingSection);
+                }
+            }
+
+            function renderSectionList() {
+                sectionList.innerHTML = '';
+                DEFAULT_SECCIONES.forEach(s => {
+                    const div = document.createElement('div');
+                    div.style.display = 'flex';
+                    div.style.justifyContent = 'space-between';
+                    div.style.alignItems = 'center';
+                    div.style.padding = '8px';
+                    div.style.borderBottom = '1px dotted var(--border-color)';
+
+                    div.innerHTML = `<strong style="font-size: 14px;">${s}</strong>`;
+
+                    const btnDelete = document.createElement('button');
+                    btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    btnDelete.className = 'action-btn danger';
+                    btnDelete.style.width = '30px';
+                    btnDelete.style.padding = '5px';
+                    btnDelete.style.fontSize = '12px';
+                    btnDelete.style.height = '30px';
+                    btnDelete.style.borderRadius = '50%';
+                    btnDelete.onclick = () => deleteSection(s);
+                    
+                    if (DEFAULT_SECCIONES.length > 1) {
+                         div.appendChild(btnDelete);
+                    } else {
+                        const span = document.createElement('span');
+                        span.textContent = ' (Mínima)';
+                        span.style.color = 'var(--secondary-color)';
+                        span.style.fontSize = '12px';
+                        div.appendChild(span);
+                    }
+                    sectionList.appendChild(div);
+                });
+            }
+
+            function deleteProduct(index) {
+                const confirmModal = document.getElementById('confirmDeleteProductModal');
+                const confirmBtn = document.getElementById('confirmDeleteProductBtn');
+                const cancelBtn = document.getElementById('cancelDeleteProductBtn');
+                const msgEl = document.getElementById('confirmDeleteProductMsg');
+
+                msgEl.textContent = `¿Seguro que desea eliminar el producto "${productos[index].nombre}"?`;
+                confirmModal.style.display = 'flex';
+
+                // Clonar botones para eliminar listeners anteriores
+                const newConfirm = confirmBtn.cloneNode(true);
+                const newCancel = cancelBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+                cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+
+                newConfirm.onclick = () => {
+                    confirmModal.style.display = 'none';
+                    productos.splice(index, 1);
+                    save();
+                    renderProductList(true);
+                    render();
+                    showToast('Producto eliminado.', 'success');
+                };
+                newCancel.onclick = () => {
+                    confirmModal.style.display = 'none';
+                };
+            }
+
+            function openEditProductModal(index) {
+                currentProductIndexToEdit = index;
+                const p = productos[index];
+                editNombreInput.value = p.nombre || '';
+                editPrecioInput.value = p.precio || '';
+                editProductModal.style.display = 'flex';
+            }
+
+            btnSaveProductEdit.onclick = () => {
+                if (currentProductIndexToEdit > -1) {
+                    productos[currentProductIndexToEdit].nombre = editNombreInput.value.trim();
+                    productos[currentProductIndexToEdit].precio = editPrecioInput.value.trim();
+                    save();
+                    renderProductList(true);
+                    render();
+                    editProductModal.style.display = 'none';
+                    showToast('Producto actualizado.', 'success');
+                }
+            };
+
+            btnCancelProductEdit.onclick = () => {
+                editProductModal.style.display = 'none';
+                currentProductIndexToEdit = -1;
+            };
+
+            btnAddProduct.onclick = () => {
+                const newSection = settingSectionSelect.value;
+                const f = { 
+                    seccion: newSection, 
+                    precio: '0', 
+                    nombre: 'Nuevo Producto', 
+                    t0700: '', t1200: '', t1500: '', t2200: '' 
+                };
+                
+                // Buscar el índice del último elemento de la sección para insertarlo después
+                const lastIndexInSection = productos.map(p => p.seccion).lastIndexOf(newSection);
+                if (lastIndexInSection > -1) {
+                    productos.splice(lastIndexInSection + 1, 0, f);
+                } else {
+                    productos.push(f);
+                }
+
+                save();
+                renderProductList(true); // Re-inicializar Sortable
+                render();
+                showToast('Producto agregado.', 'success');
+            };
+
+            btnAddSection.onclick = () => {
+                const newSectionName = newSectionInput.value.trim().toUpperCase();
+                if (newSectionName && !DEFAULT_SECCIONES.includes(newSectionName)) {
+                    DEFAULT_SECCIONES.push(newSectionName);
+                    save();
+                    renderSectionList();
+                    renderSettingsSectionSelect(); 
+                    render(); // Refrescar chips principales
+                    newSectionInput.value = '';
+                    showToast('Sección creada.', 'success');
+                } else if (DEFAULT_SECCIONES.includes(newSectionName)) {
+                    showToast('La sección ya existe.', 'error');
+                } else {
+                    showToast('Ingrese un nombre de sección válido.', 'error');
+                }
+            };
+            
+            function deleteSection(name) {
+                if (DEFAULT_SECCIONES.length === 1) {
+                    showToast('Debe existir al menos una sección.', 'error');
+                    return;
+                }
+
+                const confirmModal = document.getElementById('confirmDeleteSectionModal');
+                const confirmBtn = document.getElementById('confirmDeleteSectionBtn');
+                const cancelBtn = document.getElementById('cancelDeleteSectionBtn');
+                const msgEl = document.getElementById('confirmDeleteSectionMsg');
+
+                msgEl.textContent = `ADVERTENCIA: ¿Desea eliminar la sección "${name}"? Esto también eliminará TODOS los productos asociados a ella.`;
+                confirmModal.style.display = 'flex';
+
+                // Clonar botones para eliminar listeners anteriores
+                const newConfirm = confirmBtn.cloneNode(true);
+                const newCancel = cancelBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+                cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+
+                newConfirm.onclick = () => {
+                    confirmModal.style.display = 'none';
+                    // 1. Eliminar sección de la lista de secciones
+                    DEFAULT_SECCIONES = DEFAULT_SECCIONES.filter(s => s !== name);
+                    // 2. Eliminar productos asociados
+                    productos = productos.filter(p => p.seccion !== name);
+                    // 3. Ajustar la sección activa si se eliminó
+                    if (seccionActiva === name) {
+                        seccionActiva = DEFAULT_SECCIONES[0];
+                    }
+                    save();
+                    renderSectionList();
+                    renderSettingsSectionSelect();
+                    render();
+                    showToast(`Sección "${name}" eliminada.`, 'success');
+                };
+                newCancel.onclick = () => {
+                    confirmModal.style.display = 'none';
+                };
+            }
+
+            // Inicializadores de Modales y Botones de Configuración
+
+            btnOpenSettings.onclick = () => {
+                settingsModal.style.display = 'flex';
+                sideMenu.classList.remove('open');
+                overlay.classList.remove('active');
+                
+                // Asegurar que la pestaña de Productos esté activa por defecto
+                settingsTabBtns.forEach(b => {
+                     b.classList.remove('active');
+                     document.getElementById(b.dataset.tab).style.display = 'none';
+                });
+                document.querySelector('[data-tab="product-crud"]').classList.add('active');
+                document.getElementById('product-crud').style.display = 'flex';
+                
+                // Renderizar y Inicializar Sortable
+                renderSettingsSectionSelect(); 
+                renderSectionList();
+            };
+            
+            // Cuando cambia la sección en el select, renderizar la lista e inicializar Sortable
+            settingSectionSelect.onchange = () => renderProductList(true);
+
+            settingsTabBtns.forEach(btn => {
+                btn.onclick = () => {
+                    settingsTabBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.settings-tab-content').forEach(c => c.style.display = 'none');
+
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab).style.display = 'flex';
+                    
+                    if (btn.dataset.tab === 'product-crud') {
+                        renderProductList(true);
+                    } else if (btn.dataset.tab === 'section-crud') {
+                        renderSectionList();
+                    }
+                };
+            });
+            
+            // Cierre de modales
+            allCloseBtns.forEach(btn => {
+                btn.onclick = () => { 
+                    const targetModalId = btn.dataset.modalTarget || btn.closest('.modal').id;
+                    document.getElementById(targetModalId).style.display = 'none'; 
+                };
+            });
+            
+            // Cierre global al hacer clic fuera del modal
+            window.onclick = (event) => {
+                if (event.target.classList && event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            };
+
+            // ******************************************************************
             // ************ LÓGICA DE OCULTAR BOTÓN CON TECLADO ACTIVO **********
             // ******************************************************************
 
-            // Usaremos visualViewport para detectar cambios de teclado.
-            // Establecemos la altura inicial al cargar.
             let initialViewportHeight = window.innerHeight;
             if ('visualViewport' in window) {
                 initialViewportHeight = window.visualViewport.height;
             }
             
-            // Umbral de cambio de altura (en píxeles) para considerar que el teclado está visible
             const KEYBOARD_THRESHOLD = 150; 
 
-            // Función para determinar si el botón de scroll debe mostrarse (se ha scrolleado)
             function shouldShowScrollButton() {
-                // Muestra el botón si el usuario ha scrolleado más de 300px
                 return (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300);
             }
             
-            // Función para determinar si el teclado virtual está activo
             function isKeyboardCurrentlyActive() {
                 const currentHeight = ('visualViewport' in window) ? window.visualViewport.height : window.innerHeight;
-                // Si la altura actual es significativamente menor que la altura inicial, el teclado está activo.
                 return (currentHeight < (initialViewportHeight - KEYBOARD_THRESHOLD));
             }
 
-            // Función que maneja la lógica de visibilidad del botón de scroll
             function toggleScrollButtonVisibility() {
                 const isKeyboardActive = isKeyboardCurrentlyActive();
 
                 if (isKeyboardActive) {
-                    // 1. Teclado activo: Oculta el botón inmediatamente y detiene la animación.
                     scrollTopBtn.classList.remove('show');
                     scrollTopBtn.style.display = "none";
                 } else if (shouldShowScrollButton()) {
-                    // 2. Teclado inactivo y Scrolleado: Muestra el botón con animación.
                     scrollTopBtn.style.display = "block";
-                    // Pequeño timeout para que la animación CSS 'show' se active correctamente
                     setTimeout(() => { 
                         scrollTopBtn.classList.add('show');
                     }, 50);
                 } else {
-                    // 3. Teclado inactivo y No scrolleado: Oculta el botón con animación.
                     scrollTopBtn.classList.remove('show');
-                    // Espera a que termine la animación de ocultar (0.3s) antes de aplicar display: none
                     setTimeout(() => {
                          if (!shouldShowScrollButton()) {
                              scrollTopBtn.style.display = "none";
@@ -1346,21 +2016,15 @@
                 }
             }
             
-            // Evento para detectar si el usuario hace scroll
             window.onscroll = toggleScrollButtonVisibility;
 
-            // Evento para detectar cambios en el viewport (teclado virtual en móvil)
             if ('visualViewport' in window) {
                 window.visualViewport.onresize = toggleScrollButtonVisibility;
             } else {
-                // Fallback para navegadores antiguos
                 window.addEventListener('resize', toggleScrollButtonVisibility);
             }
-
-            // ******************************************************************
-            // ************ FIN LÓGICA DE OCULTAR BOTÓN CON TECLADO ACTIVO ******
-            // ******************************************************************
             
+            // Inicialización
             window.addEventListener("load", () => {
                 setTimeout(() => { document.getElementById("splash").style.opacity = "0"; }, 1500);
                 setTimeout(() => { document.getElementById("splash").style.display = "none"; }, 2000);
